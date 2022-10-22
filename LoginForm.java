@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JSeparator;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.SwingConstants;
@@ -23,20 +24,22 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.io.FileReader;
+import java.io.BufferedReader;
+
 public class LoginForm 
 {
 
 	JFrame Loginregister;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	Boolean id_Enabled = false;
-	Boolean pwd_Enabled = false;
+	Boolean id_Enabled = false,	pwd_Enabled = false, registerGranted = false;
 	private JTextField idField;
 	private JPasswordField pwdField;
 	private JTextField adminIDTextField;
 	private JPasswordField adminPwdTextField;
 	private JPasswordField confirmPwdTextField;
 	public String userType="null";
-	public String adminID;
+	public String adminID, adminPwd="",confirm="",id,pwd;
 
 	/*** Launch the application. ***/
 	
@@ -58,7 +61,9 @@ public class LoginForm
 	/**
 	 * Create the application.
 	 */
-	public LoginForm() {
+	
+	public LoginForm() 
+	{
 		initialize();
 	}
 
@@ -195,6 +200,11 @@ public class LoginForm
 				loginPanel.add(student);
 			
 				idField = new JTextField();
+				idField.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						id = idField.getText();
+					}
+				});
 				idField.setText("Enter your ID");
 				idField.setForeground(new Color(182, 186, 197));
 				idField.setFont(new Font("Dialog", Font.PLAIN, 10));
@@ -242,21 +252,140 @@ public class LoginForm
 						if(userType.equals("Student"))
 						{
 							///check student info in files 
-							StudentForm studentPanel = new StudentForm();
-							studentPanel.setVisible(true);
-							Loginregister.dispose();
+							Boolean notGranted=true;
+							try 
+							{
+								 BufferedReader verify = new BufferedReader(new FileReader("Student_info.txt"));
+					             String Line = null;
+								 while ((Line = verify.readLine()) != null)
+					                {
+					                    String[] spliced = Line.split("\\s+");
+					                    for(int i=0;i<spliced.length;++i)
+					                    {
+					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
+						                    {	
+						                    	notGranted=true;
+						                    }
+
+					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
+						                    {
+						                    	notGranted=false;
+						                    	break;
+						                    }
+					                    }
+					                    if(!notGranted)
+					                    	break;
+					                }
+							} 
+							catch (IOException e2) 
+							{
+								e2.printStackTrace();
+							}
+							
+							if(!notGranted)  //login ok
+							{
+								JOptionPane.showMessageDialog(null,"Login Successful!");
+								StudentForm studentPanel = new StudentForm();
+								studentPanel.setVisible(true);
+								Loginregister.dispose();
+							}
+							else 
+							{
+								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+							}
+							
+						
 						}
 						else if(userType.equals("Admin"))
 						{
-							AdminForm adminPanel = new AdminForm();
-							adminPanel.setVisible(true);
-							Loginregister.dispose();
+							//check login credentials here
+							Boolean notGranted=true;
+							try 
+							{
+								 BufferedReader verify = new BufferedReader(new FileReader("Admin_info.txt"));
+					             String Line = null;
+								 while ((Line = verify.readLine()) != null)
+					                {
+					                    String[] spliced = Line.split("\\s+");
+					                    for(int i=0;i<spliced.length;++i)
+					                    {
+					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
+						                    {	
+						                    	notGranted=true;
+						                    }
+
+					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
+						                    {
+						                    	notGranted=false;
+						                    	break;
+						                    }
+					                    }
+					                    if(!notGranted)
+					                    	break;
+					                }
+							} 
+							catch (IOException e2) 
+							{
+								e2.printStackTrace();
+							}
+							
+							if(!notGranted)  //login ok
+							{
+								JOptionPane.showMessageDialog(null, "Login Successful!");
+								AdminForm adminPanel = new AdminForm();
+								adminPanel.setVisible(true);
+								Loginregister.dispose();
+							}
+							else 
+							{
+								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+							}
+							
 						}
 						else if(userType.equals("Staff"))
 						{
-							StaffForm staffPanel = new StaffForm();
-							staffPanel.setVisible(true);
-							Loginregister.dispose();
+							Boolean notGranted=true;
+							try 
+							{
+								 BufferedReader verify = new BufferedReader(new FileReader("Staff_info.txt"));
+					             String Line = null;
+								 while ((Line = verify.readLine()) != null)
+					                {
+					                    String[] spliced = Line.split("\\s+");
+					                    for(int i=0;i<spliced.length;++i)
+					                    {
+					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
+						                    {	
+						                    	notGranted=true;
+						                    }
+
+					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
+						                    {
+						                    	notGranted=false;
+						                    	break;
+						                    }
+					                    }
+					                    if(!notGranted)
+					                    	break;
+					                }
+							} 
+							catch (IOException e2) 
+							{
+								e2.printStackTrace();
+							}
+							
+							if(!notGranted)  //login ok
+							{
+								JOptionPane.showMessageDialog(null,"Login Successful!");
+								StaffForm staffPanel = new StaffForm();
+								staffPanel.setVisible(true);
+								Loginregister.dispose();
+							}
+							else 
+							{
+								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+							}
+							
 						}
 						else
 						{
@@ -284,6 +413,11 @@ public class LoginForm
 
 		
 				pwdField = new JPasswordField();
+				pwdField.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						pwd = new String(pwdField.getPassword());
+					}
+				});
 				pwdField.setToolTipText("");
 				pwdField.setText("Password");
 				pwdField.setForeground(new Color(182, 186, 197));
@@ -362,7 +496,6 @@ public class LoginForm
 				separator_4.setBounds(55, 168, 341, 1);
 				registerPanel.add(separator_4);
 				
-				//String adminID;
 				
 				adminIDTextField = new JTextField();
 				adminIDTextField.addActionListener(new ActionListener() 
@@ -377,7 +510,6 @@ public class LoginForm
 				
 				adminIDTextField.setForeground(new Color(182, 186, 197));
 				adminIDTextField.setFont(new Font("Dialog", Font.PLAIN, 10));
-				adminIDTextField.setText("Enter admin ID");
 				adminIDTextField.setBorder(null);
 				adminIDTextField.setBackground(new Color(35, 45, 65));
 				adminIDTextField.setColumns(10);
@@ -414,10 +546,14 @@ public class LoginForm
 				registerPanel.add(adminPwdLabel);
 				
 				adminPwdTextField = new JPasswordField();
+				adminPwdTextField.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						adminPwd = new String(adminPwdTextField.getPassword());
+					}
+				});
 				adminPwdTextField.setForeground(new Color(182, 186, 197));
 				adminPwdTextField.setBorder(null);
 				adminPwdTextField.setBackground(new Color(35, 45, 65));
-				adminPwdTextField.setText("password");
 				adminPwdTextField.setBounds(55, 250, 341, 19);
 				registerPanel.add(adminPwdTextField);
 				
@@ -427,18 +563,75 @@ public class LoginForm
 				confirmPwdLabel.setBounds(55, 329, 196, 13);
 				registerPanel.add(confirmPwdLabel);
 				
+				
+				
 				confirmPwdTextField = new JPasswordField();
+				confirmPwdTextField.addActionListener(new ActionListener() 
+				{
+					public void actionPerformed(ActionEvent e) 
+					{
+					   confirm = new String(confirmPwdTextField.getPassword());
+					}
+				});
 				confirmPwdTextField.setBorder(null);
 				confirmPwdTextField.setForeground(new Color(182, 186, 197));
-				confirmPwdTextField.setText("password");
 				confirmPwdTextField.setBackground(new Color(35, 45, 65));
 				confirmPwdTextField.setBounds(55, 363, 341, 19);
 				registerPanel.add(confirmPwdTextField);
 				
+				
+				
 				JButton registerButton = new JButton("Register");
-				registerButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						// store admin info in file here
+				registerButton.addActionListener(new ActionListener() 
+				{
+					public void actionPerformed(ActionEvent e) 
+					{
+						Boolean notGranted=false;
+						try 
+						{
+							 BufferedReader verify = new BufferedReader(new FileReader("Admin_info.txt"));
+				             String Line = null;
+							 while ((Line = verify.readLine()) != null)
+				                {
+				                    String[] spliced = Line.split("\\s+");
+				                    for(int i=0;i<spliced.length;++i)
+				                    {
+				                    	if(spliced[i].equals(adminID))
+					                    {
+					                    	JOptionPane.showMessageDialog(null,"This ID already exists");
+					                    	notGranted=true;
+					                    	break;
+					                    }
+				                    }
+				                    if(notGranted)
+				                    	break;
+				                }
+						} 
+						catch (IOException e2) 
+						{
+							e2.printStackTrace();
+						}
+						
+						if(confirm.equals(adminPwd)==true && !notGranted)
+						{
+							JOptionPane.showMessageDialog(null, "Successfully Registered!");
+							// create Admin class here
+							Admin admin = new Admin();
+							try {
+								admin.Admin_register(adminPwd, adminID);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							
+						}
+						else if(confirm.equals(adminPwd)==false)	
+						{
+							JOptionPane.showMessageDialog(null,"Password does not match");
+						}
+						adminIDTextField.setText("Enter Admin ID");
+						adminPwdTextField.setText("password");
+						confirmPwdTextField.setText("pasword");
+						
 					}
 				});
 				registerButton.setFont(new Font("Dialog", Font.BOLD, 13));
