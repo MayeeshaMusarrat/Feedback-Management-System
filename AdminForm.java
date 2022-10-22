@@ -8,7 +8,6 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import java.sql.DriverManager;
 
 import java.awt.Font;
 import java.awt.Image;
@@ -26,14 +25,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 public class LoginForm 
 {
@@ -69,7 +61,9 @@ public class LoginForm
 	/**
 	 * Create the application.
 	 */
-	public LoginForm() {
+	
+	public LoginForm() 
+	{
 		initialize();
 	}
 
@@ -258,9 +252,49 @@ public class LoginForm
 						if(userType.equals("Student"))
 						{
 							///check student info in files 
-							StudentForm studentPanel = new StudentForm();
-							studentPanel.setVisible(true);
-							Loginregister.dispose();
+							Boolean notGranted=true;
+							try 
+							{
+								 BufferedReader verify = new BufferedReader(new FileReader("Student_info.txt"));
+					             String Line = null;
+								 while ((Line = verify.readLine()) != null)
+					                {
+					                    String[] spliced = Line.split("\\s+");
+					                    for(int i=0;i<spliced.length;++i)
+					                    {
+					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
+						                    {	
+						                    	notGranted=true;
+						                    }
+
+					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
+						                    {
+						                    	notGranted=false;
+						                    	break;
+						                    }
+					                    }
+					                    if(!notGranted)
+					                    	break;
+					                }
+							} 
+							catch (IOException e2) 
+							{
+								e2.printStackTrace();
+							}
+							
+							if(!notGranted)  //login ok
+							{
+								JOptionPane.showMessageDialog(null,"Login Successful!");
+								StudentForm studentPanel = new StudentForm();
+								studentPanel.setVisible(true);
+								Loginregister.dispose();
+							}
+							else 
+							{
+								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+							}
+							
+						
 						}
 						else if(userType.equals("Admin"))
 						{
@@ -310,9 +344,48 @@ public class LoginForm
 						}
 						else if(userType.equals("Staff"))
 						{
-							StaffForm staffPanel = new StaffForm();
-							staffPanel.setVisible(true);
-							Loginregister.dispose();
+							Boolean notGranted=true;
+							try 
+							{
+								 BufferedReader verify = new BufferedReader(new FileReader("Staff_info.txt"));
+					             String Line = null;
+								 while ((Line = verify.readLine()) != null)
+					                {
+					                    String[] spliced = Line.split("\\s+");
+					                    for(int i=0;i<spliced.length;++i)
+					                    {
+					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
+						                    {	
+						                    	notGranted=true;
+						                    }
+
+					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
+						                    {
+						                    	notGranted=false;
+						                    	break;
+						                    }
+					                    }
+					                    if(!notGranted)
+					                    	break;
+					                }
+							} 
+							catch (IOException e2) 
+							{
+								e2.printStackTrace();
+							}
+							
+							if(!notGranted)  //login ok
+							{
+								JOptionPane.showMessageDialog(null,"Login Successful!");
+								StaffForm staffPanel = new StaffForm();
+								staffPanel.setVisible(true);
+								Loginregister.dispose();
+							}
+							else 
+							{
+								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+							}
+							
 						}
 						else
 						{
@@ -505,6 +578,8 @@ public class LoginForm
 				confirmPwdTextField.setBackground(new Color(35, 45, 65));
 				confirmPwdTextField.setBounds(55, 363, 341, 19);
 				registerPanel.add(confirmPwdTextField);
+				
+				
 				
 				JButton registerButton = new JButton("Register");
 				registerButton.addActionListener(new ActionListener() 
