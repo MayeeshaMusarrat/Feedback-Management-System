@@ -276,6 +276,7 @@ public class LoginForm
 					                    if(!notGranted)
 					                    	break;
 					                }
+								 verify.close();
 							} 
 							catch (IOException e2) 
 							{
@@ -323,6 +324,7 @@ public class LoginForm
 					                    if(!notGranted)
 					                    	break;
 					                }
+								 verify.close();
 							} 
 							catch (IOException e2) 
 							{
@@ -340,7 +342,6 @@ public class LoginForm
 							{
 								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
 							}
-							
 						}
 						else if(userType.equals("Staff"))
 						{
@@ -368,6 +369,7 @@ public class LoginForm
 					                    if(!notGranted)
 					                    	break;
 					                }
+								 verify.close();
 							} 
 							catch (IOException e2) 
 							{
@@ -498,6 +500,13 @@ public class LoginForm
 				
 				
 				adminIDTextField = new JTextField();
+				adminIDTextField.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						adminIDTextField.setText("");
+					}
+				});
+				adminIDTextField.setText("Enter admin ID");
 				adminIDTextField.addActionListener(new ActionListener() 
 				{
 					public void actionPerformed(ActionEvent e) 
@@ -546,6 +555,13 @@ public class LoginForm
 				registerPanel.add(adminPwdLabel);
 				
 				adminPwdTextField = new JPasswordField();
+				adminPwdTextField.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						adminPwdTextField.setText("");
+					}
+				});
+				adminPwdTextField.setText("password");
 				adminPwdTextField.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						adminPwd = new String(adminPwdTextField.getPassword());
@@ -566,6 +582,13 @@ public class LoginForm
 				
 				
 				confirmPwdTextField = new JPasswordField();
+				confirmPwdTextField.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						confirmPwdTextField.setText("");
+					}
+				});
+				confirmPwdTextField.setText("password");
 				confirmPwdTextField.addActionListener(new ActionListener() 
 				{
 					public void actionPerformed(ActionEvent e) 
@@ -578,8 +601,6 @@ public class LoginForm
 				confirmPwdTextField.setBackground(new Color(35, 45, 65));
 				confirmPwdTextField.setBounds(55, 363, 341, 19);
 				registerPanel.add(confirmPwdTextField);
-				
-				
 				
 				JButton registerButton = new JButton("Register");
 				registerButton.addActionListener(new ActionListener() 
@@ -606,6 +627,7 @@ public class LoginForm
 				                    if(notGranted)
 				                    	break;
 				                }
+							 verify.close();
 						} 
 						catch (IOException e2) 
 						{
