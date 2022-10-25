@@ -1,7 +1,10 @@
+package studentPackage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
+
+import LoginRegisterPackage.*;
 
 import java.awt.Color;
 import javax.swing.JButton;
@@ -38,6 +41,7 @@ public class StudentForm extends JFrame
 	private JPanel studentGiveFeedbackPanel1;
 	private JTextField txtEgCircuitBoard;
 	private JTextField textField;
+	public static String name,id,level,batch,phone,mail;
 
 	/**
 	 * Create the frame.
@@ -54,7 +58,7 @@ public class StudentForm extends JFrame
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		//studentFrame.setUndecorated(true);
-		String studentName="mai";
+		
 				
 		
 		/// =============================================== SIDE DECOR PANELS ============================================================================//
@@ -70,8 +74,6 @@ public class StudentForm extends JFrame
 		studentDashboardPane.setBorder(null);
 		studentDashboardPane.setBounds(352, -70, 761, 707);
 		contentPane.add(studentDashboardPane);
-		
-
 		
 		JButton studentLogoutButton = new JButton("Logout");
 		studentLogoutButton.addMouseListener(new MouseAdapter() {
@@ -201,10 +203,10 @@ public class StudentForm extends JFrame
 		studentWelcomePanel.setBounds(0, 103, 768, 141);
 		studentProfilePanel.add(studentWelcomePanel);
 		
-		JLabel studentWelcomeLabel = new JLabel("Welcome");
-		studentWelcomeLabel.setForeground(new Color(228, 228, 228));
-		studentWelcomeLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentWelcomeLabel.setBounds(25, 37, 113, 23);
+		JLabel studentWelcomeLabel = new JLabel("Welcome to Student Module");
+		studentWelcomeLabel.setForeground(new Color(255, 255, 255));
+		studentWelcomeLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		studentWelcomeLabel.setBounds(24, 37, 273, 23);
 		studentWelcomePanel.add(studentWelcomeLabel);
 		
 		JLabel studentNameLabel = new JLabel("Name:");
@@ -212,45 +214,71 @@ public class StudentForm extends JFrame
 		studentNameLabel.setBounds(89, 308, 85, 19);
 		studentProfilePanel.add(studentNameLabel);
 		
-		JLabel studentNameShowLabel = new JLabel("");
-		studentNameShowLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentNameShowLabel.setBounds(156, 312, 63, 13);
+		JLabel studentNameShowLabel = new JLabel(name);
+		studentNameShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+		studentNameShowLabel.setBounds(148, 300, 327, 32);
 		studentProfilePanel.add(studentNameShowLabel);
 		
-		JLabel lblStudentId = new JLabel("Student ID:");
-		lblStudentId.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblStudentId.setBounds(89, 354, 85, 19);
-		studentProfilePanel.add(lblStudentId);
+		JLabel studentIDLabel = new JLabel("Student ID:");
+		studentIDLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		studentIDLabel.setBounds(89, 354, 85, 19);
+		studentProfilePanel.add(studentIDLabel);
 		
-		JLabel studentNameShowLabel_1 = new JLabel("");
-		studentNameShowLabel_1.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentNameShowLabel_1.setBounds(184, 359, 63, 13);
-		studentProfilePanel.add(studentNameShowLabel_1);
+		JLabel studentLevelShowLabel = new JLabel(level);
+		studentLevelShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+		studentLevelShowLabel.setBounds(143, 383, 183, 46);
+		studentProfilePanel.add(studentLevelShowLabel);
 		
-		JLabel lblLevel = new JLabel("Level: ");
-		lblLevel.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblLevel.setBounds(89, 398, 183, 19);
-		studentProfilePanel.add(lblLevel);
+		JLabel studentLevelLabel = new JLabel("Level: ");
+		studentLevelLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		studentLevelLabel.setBounds(89, 398, 183, 19);
+		studentProfilePanel.add(studentLevelLabel);
 		
-		JLabel lblEmail = new JLabel("Batch:");
-		lblEmail.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblEmail.setBounds(89, 445, 93, 19);
-		studentProfilePanel.add(lblEmail);
+		JLabel studentBatchLabel = new JLabel("Batch:");
+		studentBatchLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		studentBatchLabel.setBounds(89, 445, 93, 19);
+		studentProfilePanel.add(studentBatchLabel);
 		
-		JLabel lblPhoneNumber = new JLabel("Phone Number:");
-		lblPhoneNumber.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblPhoneNumber.setBounds(89, 493, 140, 19);
-		studentProfilePanel.add(lblPhoneNumber);
-		
-		JLabel lblPhoneNumber_1 = new JLabel("");
-		lblPhoneNumber_1.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblPhoneNumber_1.setBounds(89, 510, 119, 19);
-		studentProfilePanel.add(lblPhoneNumber_1);
+		JLabel studentPhoneLabel = new JLabel("Phone Number:");
+		studentPhoneLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		studentPhoneLabel.setBounds(89, 545, 140, 19);
+		studentProfilePanel.add(studentPhoneLabel);
 		
 		JLabel userIcon = new JLabel("");
-		userIcon.setBounds(456, 312, 158, 188);
+		userIcon.setBounds(487, 341, 158, 188);
 		studentProfilePanel.add(userIcon);
 		userIcon.setIcon(new ImageIcon(userImg));
+		
+		JLabel lblNewLabel_2 = new JLabel("MIST CSE Feedback System");
+		lblNewLabel_2.setForeground(new Color(163, 163, 163));
+		lblNewLabel_2.setFont(new Font("Dialog", Font.ITALIC, 14));
+		lblNewLabel_2.setBounds(25, 63, 192, 23);
+		studentProfilePanel.add(lblNewLabel_2);
+		
+		JLabel studentIDShowLabel = new JLabel(id);
+		studentIDShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+		studentIDShowLabel.setBounds(184, 351, 327, 24);
+		studentProfilePanel.add(studentIDShowLabel);
+		
+		JLabel studentMailLabel = new JLabel("Email Address:");
+		studentMailLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+		studentMailLabel.setBounds(89, 491, 140, 19);
+		studentProfilePanel.add(studentMailLabel);
+		
+		JLabel studentBatchShowLabel = new JLabel(batch);
+		studentBatchShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+		studentBatchShowLabel.setBounds(148, 427, 327, 54);
+		studentProfilePanel.add(studentBatchShowLabel);
+		
+		JLabel studentEmailShowLabel = new JLabel(mail);
+		studentEmailShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+		studentEmailShowLabel.setBounds(219, 483, 327, 32);
+		studentProfilePanel.add(studentEmailShowLabel);
+		
+		JLabel studentPhoneShowLabel = new JLabel(phone);
+		studentPhoneShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+		studentPhoneShowLabel.setBounds(219, 542, 327, 24);
+		studentProfilePanel.add(studentPhoneShowLabel);
 		
 		/// ========================================== STUDENT GIVE FEEDBACK PANEL ============================================================/// 
 		
