@@ -1,3 +1,7 @@
+package LoginRegisterPackage;
+import studentPackage.*;
+import staffPackage.StaffForm;
+import adminPackage.*;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,6 +25,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.SwingConstants;
 
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -30,7 +35,7 @@ import java.io.BufferedReader;
 public class LoginForm 
 {
 
-	JFrame Loginregister;
+	public JFrame Loginregister;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	Boolean id_Enabled = false,	pwd_Enabled = false, registerGranted = false;
 	private JTextField idField;
@@ -259,23 +264,20 @@ public class LoginForm
 					             String Line = null;
 								 while ((Line = verify.readLine()) != null)
 					                {
-					                    String[] spliced = Line.split("\\s+");
-					                    for(int i=0;i<spliced.length;++i)
+					                    String[] spliced = Line.split("\\s+");					     
+				                    	if(spliced[0].equals(id)==true && spliced[1].equals(pwd)==true)
 					                    {
-					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
-						                    {	
-						                    	notGranted=true;
-						                    }
-
-					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
-						                    {
-						                    	notGranted=false;
-						                    	break;
-						                    }
-					                    }
-					                    if(!notGranted)
+					                    	notGranted=false;
+					                    	studentPackage.StudentForm.id=spliced[0];
+					                    	studentPackage.StudentForm.name=spliced[2]+" "+spliced[3]; 
+					                    	studentPackage.StudentForm.phone=spliced[5];
+					                    	studentPackage.StudentForm.level=spliced[4];
+					                    	studentPackage.StudentForm.mail=spliced[6];
+					                    	studentPackage.StudentForm.batch=spliced[7];
 					                    	break;
-					                }
+					                    }
+					                   
+					                 }
 								 verify.close();
 							} 
 							catch (IOException e2) 
@@ -308,22 +310,12 @@ public class LoginForm
 								 while ((Line = verify.readLine()) != null)
 					                {
 					                    String[] spliced = Line.split("\\s+");
-					                    for(int i=0;i<spliced.length;++i)
+					                    if(spliced[0].equals(id)==true && spliced[1].equals(pwd)==true)
 					                    {
-					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
-						                    {	
-						                    	notGranted=true;
-						                    }
-
-					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
-						                    {
-						                    	notGranted=false;
-						                    	break;
-						                    }
-					                    }
-					                    if(!notGranted)
+					                    	notGranted=false;
 					                    	break;
-					                }
+					                    }				                    
+					                }     
 								 verify.close();
 							} 
 							catch (IOException e2) 
@@ -353,21 +345,11 @@ public class LoginForm
 								 while ((Line = verify.readLine()) != null)
 					                {
 					                    String[] spliced = Line.split("\\s+");
-					                    for(int i=0;i<spliced.length;++i)
+				                    	if(spliced[0].equals(id)==true && spliced[1].equals(pwd)==true)
 					                    {
-					                    	if(spliced[i].equals(id)==false || spliced[1].equals(pwd)==false)
-						                    {	
-						                    	notGranted=true;
-						                    }
-
-					                    	else if(spliced[i].equals(id)==true && spliced[1].equals(pwd)==true)
-						                    {
-						                    	notGranted=false;
-						                    	break;
-						                    }
-					                    }
-					                    if(!notGranted)
+					                    	notGranted=false;
 					                    	break;
+					                    }
 					                }
 								 verify.close();
 							} 
