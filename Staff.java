@@ -21,8 +21,16 @@ public class Staff extends Student
         this.Staff_password=Staff_password;
         InputStaffToFile();
     }
-    void Add_student(String Student_ID, String Student_password, String Student_first_name,String Student_last_name,String Student_number, String Level, String Mail, String batch) throws IOException
+    Boolean Add_student(String Student_ID, String Student_password, String Student_first_name,String Student_last_name,String Student_number, String Level, String Mail, String batch) throws IOException
     {
-        Create_student(Student_ID, Student_password,Student_first_name,Student_last_name,Student_number,Level,Mail,batch);
+        if(Create_student(Student_ID, Student_password,Student_first_name,Student_last_name,Student_number,Level,Mail,batch))
+        {
+        	return true;
+        }
+        return false;
+    }
+    void Delete_student(String val) throws FileNotFoundException, IOException
+    {
+    	Remove_student(val);
     }
 }
