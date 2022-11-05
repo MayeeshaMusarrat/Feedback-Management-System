@@ -10,34 +10,64 @@ import studentPackage.Student;
 import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.TableCellRenderer;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class StaffForm extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField studentFirstNameTextfield;
-	private JTextField studentLastNameTextfield;
-	private JTextField studentIDTextfield;
-	private JTextField studentLevelTextfield;
-	private JTextField studentPhoneTextfield;
-	private JTextField studentPwdTextfield;
-	private JTextField studentEmailTextfield;
+	String firstname,lastname,ID,level,number,pwd,mail,batch;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JTextField studentBatchTextfield;
 	private JTextField textField_3;
 	private JTextField textField_4;
+	DefaultTableModel model;
+	private JTable studentTable;
+	private JButton add;
+	private JButton update;
+	private JTextField updateName;
+	private JTextField updateID;
+	private JTextField updatePwd;
+	private JTextField updateNumber;
+	private JTextField updateMail;
+	private JTextField updateBatch;
+	private final ButtonGroup studentLevel = new ButtonGroup();
+	private JRadioButton level2,level1,level3,level4;
+	private JTextField studentFirstName;
+	private JTextField studentLastName;
+	private JTextField studentID;
+	private JTextField stuLevel;
+	private JTextField studentNumber;
+	private JTextField studentPwd;
+	private JTextField studentMail;
+	private JTextField studentBatch;
 
 	/**
 	 * Create the frame.
@@ -67,156 +97,199 @@ public class StaffForm extends JFrame {
 		staffDashboardPane.addTab("New tab", null, staffProfilePanel, null);
 		staffProfilePanel.setLayout(null);
 		
-		JPanel AddDelStudentPanel = new JPanel();
-		AddDelStudentPanel.setForeground(new Color(0, 0, 0));
-		AddDelStudentPanel.setBackground(new Color(255, 255, 255));
-		staffDashboardPane.addTab("New tab", null, AddDelStudentPanel, null);
-		AddDelStudentPanel.setLayout(null);
+		JPanel studentWelcomePanel = new JPanel();
+		studentWelcomePanel.setLayout(null);
+		studentWelcomePanel.setBorder(null);
+		studentWelcomePanel.setBackground(new Color(51, 181, 165));
+		studentWelcomePanel.setBounds(0, 58, 768, 141);
+		staffProfilePanel.add(studentWelcomePanel);
 		
-		studentFirstNameTextfield = new JTextField();
-		studentFirstNameTextfield.setColumns(10);
-		studentFirstNameTextfield.setBounds(40, 170, 312, 19);
-		AddDelStudentPanel.add(studentFirstNameTextfield);
+		JLabel lblWelcomeToStaff = new JLabel("Welcome to Staff Module");
+		lblWelcomeToStaff.setForeground(Color.WHITE);
+		lblWelcomeToStaff.setFont(new Font("Dialog", Font.BOLD, 16));
+		lblWelcomeToStaff.setBounds(24, 37, 273, 23);
+		studentWelcomePanel.add(lblWelcomeToStaff);
 		
-		studentLastNameTextfield = new JTextField();
-		studentLastNameTextfield.setColumns(10);
-		studentLastNameTextfield.setBounds(383, 170, 312, 19);
-		AddDelStudentPanel.add(studentLastNameTextfield);
+		JLabel lblNewLabel_2_1 = new JLabel("MIST CSE Feedback System");
+		lblNewLabel_2_1.setForeground(new Color(163, 163, 163));
+		lblNewLabel_2_1.setFont(new Font("Dialog", Font.ITALIC, 14));
+		lblNewLabel_2_1.setBounds(21, 20, 192, 23);
+		staffProfilePanel.add(lblNewLabel_2_1);
 		
-		studentIDTextfield = new JTextField();
-		studentIDTextfield.setColumns(10);
-		studentIDTextfield.setBounds(40, 274, 312, 19);
-		AddDelStudentPanel.add(studentIDTextfield);
+		JLabel staffIcon = new JLabel("");
+		staffIcon.setBounds(438, 265, 256, 256);
+		staffProfilePanel.add(staffIcon);
 		
-		JLabel lblNewLabel = new JLabel("NAME");
-		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblNewLabel.setBounds(40, 147, 100, 13);
-		AddDelStudentPanel.add(lblNewLabel);
+		Image staffImg = new ImageIcon(this.getClass().getResource("/userIcon.png")).getImage();
+		staffIcon.setIcon(new ImageIcon(staffImg));
 		
-		JLabel lblLastName = new JLabel("Last Name ");
-		lblLastName.setForeground(new Color(128, 128, 128));
-		lblLastName.setFont(new Font("Dialog", Font.PLAIN, 10));
-		lblLastName.setBounds(383, 199, 100, 13);
-		AddDelStudentPanel.add(lblLastName);
+		JPanel staffViewFeedbackPanel = new JPanel();
+		staffDashboardPane.addTab("New tab", null, staffViewFeedbackPanel, null);
 		
-		JLabel lblStudentId_1 = new JLabel("STUDENT ID");
-		lblStudentId_1.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblStudentId_1.setBounds(40, 251, 100, 13);
-		AddDelStudentPanel.add(lblStudentId_1);
+		JPanel staffViewStudentPanel = new JPanel();
+		staffViewStudentPanel.setBackground(new Color(255, 255, 255));
+		staffDashboardPane.addTab("New tab", null, staffViewStudentPanel, null);
+		staffViewStudentPanel.setLayout(null);
 		
-		JLabel lblLevel = new JLabel("BATCH");
-		lblLevel.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblLevel.setBounds(40, 354, 72, 13);
-		AddDelStudentPanel.add(lblLevel);
+		JPanel topDecorPanel3 = new JPanel();
+		topDecorPanel3.setLayout(null);
+		topDecorPanel3.setBackground(new Color(51, 181, 165));
+		topDecorPanel3.setBounds(0, 0, 751, 103);
+		staffViewStudentPanel.add(topDecorPanel3);
 		
-		studentLevelTextfield = new JTextField();
-		studentLevelTextfield.setColumns(10);
-		studentLevelTextfield.setBounds(383, 375, 312, 19);
-		AddDelStudentPanel.add(studentLevelTextfield);
+		JLabel lblNewLabel_1_2 = new JLabel("View/Delete/Update Student Information");
+		lblNewLabel_1_2.setForeground(Color.WHITE);
+		lblNewLabel_1_2.setFont(new Font("Dialog", Font.PLAIN, 15));
+		lblNewLabel_1_2.setBounds(35, 48, 397, 20);
+		topDecorPanel3.add(lblNewLabel_1_2);
 		
-		studentPhoneTextfield = new JTextField();
-		studentPhoneTextfield.setColumns(10);
-		studentPhoneTextfield.setBounds(383, 459, 312, 19);
-		AddDelStudentPanel.add(studentPhoneTextfield);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(new Rectangle(0, 0, 6, 10));
+		scrollPane.setSize(new Dimension(4, 4));
+		scrollPane.setPreferredSize(new Dimension(5, 2));
+		scrollPane.setFont(new Font("Dialog", Font.PLAIN, 15));
+		scrollPane.setFocusable(false);
+		scrollPane.setBackground(new Color(255, 255, 255));
+		scrollPane.setBorder(null);
+		scrollPane.setBounds(20, 134, 695, 152);
 		
-		JButton btnNewButton = new JButton("Submit");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
+		
+		studentTable = new JTable();
+		studentTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
 			{
-				String firstname=studentFirstNameTextfield.getText();
-				String lastname=studentLastNameTextfield.getText();
-				String ID=studentIDTextfield.getText();
-				String level=studentLevelTextfield.getText();
-				String number=studentPhoneTextfield.getText();
-				String pwd=studentPwdTextfield.getText();
-				String mail = studentEmailTextfield.getText();
-				String batch = studentBatchTextfield.getText();
-				Staff st = new Staff();
-				try 
+				int i = studentTable.getSelectedRow();
+				updateName.setText(studentTable.getModel().getValueAt(i, 0).toString());
+				updateID.setText(studentTable.getModel().getValueAt(i, 1).toString());
+				updatePwd.setText(studentTable.getModel().getValueAt(i, 2).toString());
+				updateBatch.setText(studentTable.getModel().getValueAt(i, 3).toString());
+				updateMail.setText(studentTable.getModel().getValueAt(i, 5).toString());
+				updateNumber.setText(studentTable.getModel().getValueAt(i, 6).toString());
+				String j = studentTable.getModel().getValueAt(i, 4).toString();
+				if(j.equals("1"))
 				{
-					st.Add_student(ID,pwd,firstname,lastname,number,level,mail,batch);
-				} 
-				catch (IOException e1) 
+					level1.setSelected(true);
+				}
+				else if(j.equals("2"))
 				{
-					e1.printStackTrace();
+					level2.setSelected(true);
+				}
+				else if(j.equals("3"))
+				{
+					level3.setSelected(true);
+				}
+				else if(j.equals("4"))
+				{
+					level4.setSelected(true);
 				}
 			}
 		});
-		btnNewButton.setForeground(Color.WHITE);
-		btnNewButton.setFont(new Font("Dialog", Font.BOLD, 15));
-		btnNewButton.setFocusPainted(false);
-		btnNewButton.setBorder(null);
-		btnNewButton.setBackground(new Color(51, 181, 165));
-		btnNewButton.setBounds(173, 535, 174, 38);
-		AddDelStudentPanel.add(btnNewButton);
+		model = new DefaultTableModel();
+		Object[] column = {"Name","Student ID", "Password","Batch","Level","Email","Phone Number"};
+		Object[] row = new Object[7];
+		model.setColumnIdentifiers(column);
+		studentTable.setModel(model);
+		DefaultTableCellRenderer Center = new DefaultTableCellRenderer();
+	    Center.setHorizontalAlignment(JLabel.CENTER);
+	    studentTable.setForeground(new Color(35, 45, 65));
+		studentTable.setBackground(new Color(255, 255, 255));
+		studentTable.setFont(new Font("Dialog", Font.PLAIN, 10));
+		scrollPane.setViewportView(studentTable);
+		int sz = studentTable.getColumnCount();
+		JTableHeader Header = studentTable.getTableHeader();
+		Header.setBackground(new Color(35,45,65));
+		Header.setForeground(new Color(206,209,217));
+		Header.setFont(new Font("Dialog", Font.BOLD, 12));
+		for(int i=0;i<sz;i++)
+		{
+	         studentTable.getColumnModel().getColumn(i).setCellRenderer(Center);
+	    }
+		try 
+		{
+			BufferedReader in = new BufferedReader(new FileReader("Student_info.txt"));
+			String Line = null;
 		
-		JLabel Password = new JLabel("STUDENT PASSWORD");
-		Password.setFont(new Font("Dialog", Font.BOLD, 12));
-		Password.setBounds(383, 251, 174, 13);
-		AddDelStudentPanel.add(Password);
+			while( (Line = in.readLine() )!=null)
+			{
+				//System.out.println(Line);
+				String spliced[] = Line.split("\\s+");
+				row[0]=spliced[2]+" "+spliced[3];
+				row[1]=spliced[0];
+				row[2]=spliced[1];
+				row[3]=spliced[7];
+				row[4]=spliced[4];
+				row[5]=spliced[6];
+				row[6]=spliced[5];
+				model.addRow(row);
+			}
+			in.close();
+		} 
+		catch (IOException e2) 
+		{
+			e2.printStackTrace();
+		}
+		studentTable.getColumnModel().getColumn(0).setResizable(false);
+		studentTable.getColumnModel().getColumn(0).setPreferredWidth(80);
+		studentTable.getColumnModel().getColumn(1).setResizable(false);
+		studentTable.getColumnModel().getColumn(1).setPreferredWidth(80);
+		studentTable.getColumnModel().getColumn(2).setPreferredWidth(80);
+		studentTable.getColumnModel().getColumn(2).setResizable(false);
+		studentTable.getColumnModel().getColumn(3).setPreferredWidth(40);
+		studentTable.getColumnModel().getColumn(4).setResizable(false);
+		studentTable.getColumnModel().getColumn(4).setPreferredWidth(20);
+		studentTable.getColumnModel().getColumn(5).setPreferredWidth(80);
+		studentTable.getColumnModel().getColumn(5).setResizable(false);
+		studentTable.getColumnModel().getColumn(6).setPreferredWidth(80);
+		studentTable.getColumnModel().getColumn(6).setResizable(false);
 		
-		studentPwdTextfield = new JTextField();
-		studentPwdTextfield.setColumns(10);
-		studentPwdTextfield.setBounds(383, 274, 312, 19);
-		AddDelStudentPanel.add(studentPwdTextfield);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(51, 181, 165));
-		panel.setBounds(0, 0, 751, 103);
-		AddDelStudentPanel.add(panel);
-		panel.setLayout(null);
 		
-		JLabel lblNewLabel_1 = new JLabel("Kindly fill up the form with necessary information");
-		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 15));
-		lblNewLabel_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1.setBounds(40, 48, 397, 20);
-		panel.add(lblNewLabel_1);
+		JButton studentUpdateButton = new JButton("Update");
+		studentUpdateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		studentUpdateButton.setForeground(Color.WHITE);
+		studentUpdateButton.setFont(new Font("Dialog", Font.BOLD, 15));
+		studentUpdateButton.setFocusPainted(false);
+		studentUpdateButton.setBorder(null);
+		studentUpdateButton.setBackground(new Color(51, 181, 165));
+		studentUpdateButton.setBounds(379, 545, 164, 38);
+		staffViewStudentPanel.add(studentUpdateButton);
 		
-		studentEmailTextfield = new JTextField();
-		studentEmailTextfield.setColumns(10);
-		studentEmailTextfield.setBounds(40, 459, 312, 19);
-		AddDelStudentPanel.add(studentEmailTextfield);
-		
-		JLabel lblFirstName = new JLabel("First Name ");
-		lblFirstName.setForeground(new Color(128, 128, 128));
-		lblFirstName.setFont(new Font("Dialog", Font.PLAIN, 10));
-		lblFirstName.setBounds(40, 199, 100, 13);
-		AddDelStudentPanel.add(lblFirstName);
-		
-		JLabel lblLevel_2 = new JLabel("LEVEL");
-		lblLevel_2.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblLevel_2.setBounds(383, 354, 72, 13);
-		AddDelStudentPanel.add(lblLevel_2);
-		
-		JLabel lblPhoneNumber = new JLabel("EMAIL ADDRESS");
-		lblPhoneNumber.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblPhoneNumber.setBounds(40, 436, 139, 13);
-		AddDelStudentPanel.add(lblPhoneNumber);
-		
-		JLabel lblPhoneNumber_2 = new JLabel("PHONE NUMBER");
-		lblPhoneNumber_2.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblPhoneNumber_2.setBounds(384, 436, 139, 13);
-		AddDelStudentPanel.add(lblPhoneNumber_2);
-		
-		JLabel lblMustBeAt = new JLabel("Must be at least 8 characters");
-		lblMustBeAt.setForeground(Color.GRAY);
-		lblMustBeAt.setFont(new Font("Dialog", Font.PLAIN, 10));
-		lblMustBeAt.setBounds(383, 303, 190, 13);
-		AddDelStudentPanel.add(lblMustBeAt);
-		
-		studentBatchTextfield = new JTextField();
-		studentBatchTextfield.setColumns(10);
-		studentBatchTextfield.setBounds(40, 375, 312, 19);
-		AddDelStudentPanel.add(studentBatchTextfield);
-		
-		JButton btnClearForm = new JButton("Clear Form");
-		btnClearForm.setForeground(Color.WHITE);
-		btnClearForm.setFont(new Font("Dialog", Font.BOLD, 15));
-		btnClearForm.setFocusPainted(false);
-		btnClearForm.setBorder(null);
-		btnClearForm.setBackground(new Color(51, 181, 165));
-		btnClearForm.setBounds(383, 535, 174, 38);
-		AddDelStudentPanel.add(btnClearForm);
+		JButton btnNewButton = new JButton("Submit");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				firstname = studentFirstName.getText();
+			    lastname = studentLastName.getText();
+			    ID = studentID.getText();
+				pwd = studentPwd.getText();
+				batch = studentBatch.getText();
+				level = stuLevel.getText();
+				number = studentNumber.getText();
+				mail = studentMail.getText();
+				Staff st = new Staff();
+				try {
+					
+					//Object[] column = {"Name","Student ID", "Password","Batch","Level","Email","Phone Number"};
+					st.Create_student(ID, pwd, firstname, lastname, number, level, mail, batch);
+					row[0] = firstname+" "+lastname;
+					row[1] = ID;
+					row[2] = pwd;
+					row[3] = batch;
+					row[4] = level;
+					row[5] = mail;
+					row[6] = number;
+					model.addRow(row);
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		
 		JPanel staffGiveFeedbackPanel = new JPanel();
 		staffGiveFeedbackPanel.setBackground(new Color(255, 255, 255));
@@ -301,16 +374,332 @@ public class StaffForm extends JFrame {
 		comboBox_1_1.setBounds(344, 203, 312, 23);
 		staffGiveFeedbackPanel.add(comboBox_1_1);
 		
-		JPanel staffViewFeedbackPanel = new JPanel();
-		staffDashboardPane.addTab("New tab", null, staffViewFeedbackPanel, null);
+		
+		
+		
+		
+		
+		staffViewStudentPanel.add(scrollPane);
+		
+		
+		scrollPane.getViewport().setBackground(Color.WHITE);
+		scrollPane.setViewportBorder(null);
+		
+		
+		
+		
+		updateName = new JTextField();
+		updateName.setColumns(10);
+		updateName.setBounds(45, 329, 312, 19);
+		staffViewStudentPanel.add(updateName);
+		
+		JLabel lblNewLabel_3 = new JLabel("NAME");
+		lblNewLabel_3.setFont(new Font("Dialog", Font.BOLD, 11));
+		lblNewLabel_3.setBounds(45, 309, 100, 13);
+		staffViewStudentPanel.add(lblNewLabel_3);
+		
+		updateID = new JTextField();
+		updateID.setColumns(10);
+		updateID.setBounds(45, 384, 312, 19);
+		staffViewStudentPanel.add(updateID);
+		
+		JLabel lblStudentId_1_1 = new JLabel("STUDENT ID");
+		lblStudentId_1_1.setFont(new Font("Dialog", Font.BOLD, 11));
+		lblStudentId_1_1.setBounds(45, 361, 100, 13);
+		staffViewStudentPanel.add(lblStudentId_1_1);
+		
+		JLabel Password_1 = new JLabel("STUDENT PASSWORD");
+		Password_1.setFont(new Font("Dialog", Font.BOLD, 11));
+		Password_1.setBounds(379, 309, 174, 13);
+		staffViewStudentPanel.add(Password_1);
+		
+		updatePwd = new JTextField();
+		updatePwd.setColumns(10);
+		updatePwd.setBounds(379, 329, 312, 19);
+		staffViewStudentPanel.add(updatePwd);
+		
+		JLabel lblLevel_1 = new JLabel("BATCH");
+		lblLevel_1.setFont(new Font("Dialog", Font.BOLD, 11));
+		lblLevel_1.setBounds(379, 361, 72, 13);
+		staffViewStudentPanel.add(lblLevel_1);
+		
+		updateNumber = new JTextField();
+		updateNumber.setColumns(10);
+		updateNumber.setBounds(379, 436, 312, 19);
+		staffViewStudentPanel.add(updateNumber);
+		
+		updateMail = new JTextField();
+		updateMail.setColumns(10);
+		updateMail.setBounds(45, 436, 312, 19);
+		staffViewStudentPanel.add(updateMail);
+		
+		JLabel lblLevel_2_1 = new JLabel("STUDENT LEVEL");
+		lblLevel_2_1.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblLevel_2_1.setBounds(45, 484, 100, 13);
+		staffViewStudentPanel.add(lblLevel_2_1);
+		
+		JLabel lblPhoneNumber_1 = new JLabel("EMAIL ADDRESS");
+		lblPhoneNumber_1.setFont(new Font("Dialog", Font.BOLD, 11));
+		lblPhoneNumber_1.setBounds(45, 413, 139, 13);
+		staffViewStudentPanel.add(lblPhoneNumber_1);
+		
+		JLabel lblPhoneNumber_2_1 = new JLabel("PHONE NUMBER");
+		lblPhoneNumber_2_1.setFont(new Font("Dialog", Font.BOLD, 11));
+		lblPhoneNumber_2_1.setBounds(379, 413, 139, 13);
+		staffViewStudentPanel.add(lblPhoneNumber_2_1);
+		
+		updateBatch = new JTextField();
+		updateBatch.setColumns(10);
+		updateBatch.setBounds(379, 384, 312, 19);
+		staffViewStudentPanel.add(updateBatch);
+		
+		level1 = new JRadioButton("Level 1");
+		studentLevel.add(level1);
+		level1.setBorder(null);
+		level1.setFocusPainted(false);
+		level1.setBackground(new Color(255, 255, 255));
+		level1.setFont(new Font("Dialog", Font.PLAIN, 11));
+		level1.setBounds(174, 480, 54, 21);
+		staffViewStudentPanel.add(level1);
+		
+		level2 = new JRadioButton("Level 2");
+		studentLevel.add(level2);
+		level2.setFont(new Font("Dialog", Font.PLAIN, 11));
+		level2.setFocusPainted(false);
+		level2.setBorder(null);
+		level2.setBackground(Color.WHITE);
+		level2.setBounds(278, 480, 60, 21);
+		staffViewStudentPanel.add(level2);
+		
+		level3 = new JRadioButton("Level 3");
+		studentLevel.add(level3);
+		level3.setFont(new Font("Dialog", Font.PLAIN, 11));
+		level3.setFocusPainted(false);
+		level3.setBorder(null);
+		level3.setBackground(Color.WHITE);
+		level3.setBounds(379, 480, 60, 21);
+		staffViewStudentPanel.add(level3);
+		
+		level4 = new JRadioButton("Level 4");
+		studentLevel.add(level4);
+		level4.setFont(new Font("Dialog", Font.PLAIN, 11));
+		level4.setFocusPainted(false);
+		level4.setBorder(null);
+		level4.setBackground(Color.WHITE);
+		level4.setBounds(479, 480, 72, 21);
+		staffViewStudentPanel.add(level4);
+		
+		
+		
+		JPanel StaffAddStudentPanel = new JPanel();
+		StaffAddStudentPanel.setLayout(null);
+		StaffAddStudentPanel.setForeground(Color.BLACK);
+		StaffAddStudentPanel.setBackground(Color.WHITE);
+		staffDashboardPane.addTab("New tab", null, StaffAddStudentPanel, null);
+		
+		studentFirstName = new JTextField();
+		studentFirstName.setColumns(10);
+		studentFirstName.setBounds(40, 170, 312, 19);
+		StaffAddStudentPanel.add(studentFirstName);
+		
+		studentLastName = new JTextField();
+		studentLastName.setColumns(10);
+		studentLastName.setBounds(383, 170, 312, 19);
+		StaffAddStudentPanel.add(studentLastName);
+		
+		studentID = new JTextField();
+		studentID.setColumns(10);
+		studentID.setBounds(40, 274, 312, 19);
+		StaffAddStudentPanel.add(studentID);
+		
+		JLabel lblNewLabel = new JLabel("NAME");
+		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel.setBounds(40, 147, 100, 13);
+		StaffAddStudentPanel.add(lblNewLabel);
+		
+		JLabel lblLastName = new JLabel("Last Name ");
+		lblLastName.setForeground(Color.GRAY);
+		lblLastName.setFont(new Font("Dialog", Font.PLAIN, 10));
+		lblLastName.setBounds(393, 198, 100, 13);
+		StaffAddStudentPanel.add(lblLastName);
+		
+		JLabel lblStudentId_1 = new JLabel("STUDENT ID");
+		lblStudentId_1.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblStudentId_1.setBounds(40, 251, 100, 13);
+		StaffAddStudentPanel.add(lblStudentId_1);
+		
+		JLabel lblLevel = new JLabel("BATCH");
+		lblLevel.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblLevel.setBounds(40, 344, 72, 13);
+		StaffAddStudentPanel.add(lblLevel);
+		
+		stuLevel = new JTextField();
+		stuLevel.setColumns(10);
+		stuLevel.setBounds(383, 365, 312, 19);
+		StaffAddStudentPanel.add(stuLevel);
+		
+		studentNumber = new JTextField();
+		studentNumber.setColumns(10);
+		studentNumber.setBounds(383, 451, 312, 19);
+		StaffAddStudentPanel.add(studentNumber);
+		
+		
+		
+		JButton studentDeleteButton = new JButton("Delete");
+		studentDeleteButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				int result = JOptionPane.showConfirmDialog(null, "Delete Student?","Confirmation",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if(result == JOptionPane.YES_OPTION)
+				{
+					int i = studentTable.getSelectedRow();
+					String val = studentTable.getModel().getValueAt(i,1).toString();
+					model.removeRow(i);
+					Staff st = new Staff();
+					try {
+						//System.out.println(val);
+						st.Delete_student(val);
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+			    }
+			}
+		});
+		studentDeleteButton.setForeground(Color.WHITE);
+		studentDeleteButton.setFont(new Font("Dialog", Font.BOLD, 15));
+		studentDeleteButton.setFocusPainted(false);
+		studentDeleteButton.setBorder(null);
+		studentDeleteButton.setBackground(new Color(51, 181, 165));
+		studentDeleteButton.setBounds(193, 545, 164, 38);
+		staffViewStudentPanel.add(studentDeleteButton);
+		btnNewButton.setForeground(Color.WHITE);
+		btnNewButton.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnNewButton.setFocusPainted(false);
+		btnNewButton.setBorder(null);
+		btnNewButton.setBackground(new Color(51, 181, 165));
+		btnNewButton.setBounds(170, 522, 174, 38);
+		StaffAddStudentPanel.add(btnNewButton);
+		
+		JLabel Password = new JLabel("STUDENT PASSWORD");
+		Password.setFont(new Font("Dialog", Font.BOLD, 12));
+		Password.setBounds(383, 251, 174, 13);
+		StaffAddStudentPanel.add(Password);
+		
+		studentPwd = new JTextField();
+		studentPwd.setColumns(10);
+		studentPwd.setBounds(383, 274, 312, 19);
+		StaffAddStudentPanel.add(studentPwd);
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(null);
+		panel.setBackground(new Color(51, 181, 165));
+		panel.setBounds(0, 0, 751, 103);
+		StaffAddStudentPanel.add(panel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Kindly fill up the form with necessary information");
+		lblNewLabel_1.setForeground(Color.WHITE);
+		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 15));
+		lblNewLabel_1.setBounds(40, 48, 397, 20);
+		panel.add(lblNewLabel_1);
+		
+		studentMail = new JTextField();
+		studentMail.setColumns(10);
+		studentMail.setBounds(40, 451, 312, 19);
+		StaffAddStudentPanel.add(studentMail);
+		
+		JLabel lblFirstName = new JLabel("First Name ");
+		lblFirstName.setForeground(Color.GRAY);
+		lblFirstName.setFont(new Font("Dialog", Font.PLAIN, 10));
+		lblFirstName.setBounds(40, 198, 100, 13);
+		StaffAddStudentPanel.add(lblFirstName);
+		
+		JLabel lblLevel_2 = new JLabel("LEVEL");
+		lblLevel_2.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblLevel_2.setBounds(383, 344, 72, 13);
+		StaffAddStudentPanel.add(lblLevel_2);
+		
+		JLabel lblPhoneNumber = new JLabel("EMAIL ADDRESS");
+		lblPhoneNumber.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblPhoneNumber.setBounds(40, 428, 139, 13);
+		StaffAddStudentPanel.add(lblPhoneNumber);
+		
+		JLabel lblPhoneNumber_2 = new JLabel("PHONE NUMBER");
+		lblPhoneNumber_2.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblPhoneNumber_2.setBounds(384, 428, 139, 13);
+		StaffAddStudentPanel.add(lblPhoneNumber_2);
+		
+		JLabel lblMustBeAt = new JLabel("Must be at least 8 characters");
+		lblMustBeAt.setForeground(Color.GRAY);
+		lblMustBeAt.setFont(new Font("Dialog", Font.PLAIN, 10));
+		lblMustBeAt.setBounds(383, 303, 190, 13);
+		StaffAddStudentPanel.add(lblMustBeAt);
+		
+		studentBatch = new JTextField();
+		studentBatch.setColumns(10);
+		studentBatch.setBounds(40, 365, 312, 19);
+		StaffAddStudentPanel.add(studentBatch);
+		
+		JButton btnClearForm = new JButton("Clear Form");
+		btnClearForm.setForeground(Color.WHITE);
+		btnClearForm.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnClearForm.setFocusPainted(false);
+		btnClearForm.setBorder(null);
+		btnClearForm.setBackground(new Color(51, 181, 165));
+		btnClearForm.setBounds(383, 522, 174, 38);
+		StaffAddStudentPanel.add(btnClearForm);
+		
+		//panel.add(add1);
+		
+		/*JButton delete = new JButton("delete");
+		delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = table_2.getSelectedRow();
+				model.removeRow(i);
+			}
+		});
+		delete.setBounds(80, 249, 85, 21);
+		panel.add(delete);
+		
+		update = new JButton("update");
+		update.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = table_2.getSelectedRow();
+				model.setValueAt("mose", i, 0);
+				model.setValueAt("202114005", i, 1);
+			}
+		});
+		update.setBounds(80, 299, 85, 21);
+		panel.add(update);*/
+		
+	
 		
 		JButton adminLogoutButton = new JButton("Logout");
-		adminLogoutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null,"Confirm Logout?");
-				LoginForm window = new LoginForm();
-				window.Loginregister.setVisible(true);
-				dispose();
+		adminLogoutButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				adminLogoutButton.setBackground(new Color(53,68,98));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				adminLogoutButton.setBackground(new Color(35,45,65));
+			}
+		});
+		adminLogoutButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				int result = JOptionPane.showConfirmDialog(null,"Confirm Logout?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if(result == JOptionPane.YES_OPTION)
+				{
+						LoginForm window = new LoginForm();
+						window.Loginregister.setVisible(true);
+						dispose();
+				}
 			}
 		});
 		adminLogoutButton.setForeground(new Color(206, 209, 217));
@@ -321,10 +710,20 @@ public class StaffForm extends JFrame {
 		adminLogoutButton.setBounds(0, 532, 353, 44);
 		staffSideDecorPanel.add(adminLogoutButton);
 		
-		JButton btnAdddeleteStudent = new JButton("Add/Delete Student");
+		JButton btnAdddeleteStudent = new JButton("Add Student");
+		btnAdddeleteStudent.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnAdddeleteStudent.setBackground(new Color(53,68,98));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnAdddeleteStudent.setBackground(new Color(35,45,65));
+			}
+		});
 		btnAdddeleteStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				staffDashboardPane.setSelectedIndex(1);
+				staffDashboardPane.setSelectedIndex(4);
 			}
 		});
 		btnAdddeleteStudent.setForeground(new Color(206, 209, 217));
@@ -336,9 +735,19 @@ public class StaffForm extends JFrame {
 		staffSideDecorPanel.add(btnAdddeleteStudent);
 		
 		JButton btnGiveFeedback = new JButton("Give Feedback");
+		btnGiveFeedback.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnGiveFeedback.setBackground(new Color(53,68,98));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnGiveFeedback.setBackground(new Color(35,45,65));
+			}
+		});
 		btnGiveFeedback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				staffDashboardPane.setSelectedIndex(2);
+				staffDashboardPane.setSelectedIndex(3);
 			}
 		});
 		btnGiveFeedback.setForeground(new Color(206, 209, 217));
@@ -346,7 +755,7 @@ public class StaffForm extends JFrame {
 		btnGiveFeedback.setFocusPainted(false);
 		btnGiveFeedback.setBorder(null);
 		btnGiveFeedback.setBackground(new Color(35, 45, 65));
-		btnGiveFeedback.setBounds(0, 273, 353, 44);
+		btnGiveFeedback.setBounds(0, 304, 353, 44);
 		staffSideDecorPanel.add(btnGiveFeedback);
 		
 		JLabel adminDashboardLabel = new JLabel("D A S H B O A R D");
@@ -361,6 +770,22 @@ public class StaffForm extends JFrame {
 		staffSideDecorPanel.add(separator);
 		
 		JButton adminProfileButton = new JButton("Profile");
+		adminProfileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				staffDashboardPane.setSelectedIndex(0);
+			}
+			
+		});
+		adminProfileButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				adminProfileButton.setBackground(new Color(53,68,98));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				adminProfileButton.setBackground(new Color(35,45,65));
+			}
+		});
 		adminProfileButton.setForeground(new Color(206, 209, 217));
 		adminProfileButton.setFont(new Font("Dialog", Font.PLAIN, 15));
 		adminProfileButton.setFocusPainted(false);
@@ -370,13 +795,52 @@ public class StaffForm extends JFrame {
 		staffSideDecorPanel.add(adminProfileButton);
 		
 		JButton btnViewFeedbackStatus = new JButton("View Feedback Status");
+		btnViewFeedbackStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				staffDashboardPane.setSelectedIndex(1);
+			}
+		});
+		btnViewFeedbackStatus.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnViewFeedbackStatus.setBackground(new Color(53,68,98));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnViewFeedbackStatus.setBackground(new Color(35,45,65));
+			}
+		});
 		btnViewFeedbackStatus.setForeground(new Color(206, 209, 217));
 		btnViewFeedbackStatus.setFont(new Font("Dialog", Font.PLAIN, 15));
 		btnViewFeedbackStatus.setFocusPainted(false);
 		btnViewFeedbackStatus.setBorder(null);
 		btnViewFeedbackStatus.setBackground(new Color(35, 45, 65));
-		btnViewFeedbackStatus.setBounds(0, 327, 353, 44);
+		btnViewFeedbackStatus.setBounds(0, 347, 353, 44);
 		staffSideDecorPanel.add(btnViewFeedbackStatus);
+		
+		JButton staffDelStudentButton = new JButton("View/Delete Student");
+		staffDelStudentButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				staffDelStudentButton.setBackground(new Color(53,68,98));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				staffDelStudentButton.setBackground(new Color(35,45,65));
+			}
+		});
+		staffDelStudentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				staffDashboardPane.setSelectedIndex(2);
+			}
+		});
+		staffDelStudentButton.setForeground(new Color(206, 209, 217));
+		staffDelStudentButton.setFont(new Font("Dialog", Font.PLAIN, 15));
+		staffDelStudentButton.setFocusPainted(false);
+		staffDelStudentButton.setBorder(null);
+		staffDelStudentButton.setBackground(new Color(35, 45, 65));
+		staffDelStudentButton.setBounds(0, 262, 353, 44);
+		staffSideDecorPanel.add(staffDelStudentButton);
 		
 	
 	}
