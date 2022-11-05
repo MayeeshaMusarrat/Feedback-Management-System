@@ -124,7 +124,7 @@ public class LoginForm
 				sideDecor.setLayout(null);
 				
 				JLabel picLabel = new JLabel("");
-				picLabel.setBounds(77, 90, 256, 338);
+				picLabel.setBounds(70, 90, 256, 338);
 				sideDecor.add(picLabel);
 				Image feedbackImg = new ImageIcon(this.getClass().getResource("/feedbackIcon.png")).getImage();
 				picLabel.setIcon(new ImageIcon(feedbackImg));
@@ -160,6 +160,12 @@ public class LoginForm
 				loginPanel.setBackground(new Color(35, 45, 65));
 				loginPanel.setLayout(null);
 				
+				JLabel warning = new JLabel("");
+				warning.setForeground(new Color(255, 66, 66));
+				warning.setFont(new Font("Dialog", Font.PLAIN, 10));
+				warning.setBounds(55, 411, 163, 13);
+				loginPanel.add(warning);
+				warning.setVisible(false);
 			
 				JRadioButton admin = new JRadioButton("ADMIN");
 				admin.addActionListener(new ActionListener() {
@@ -287,17 +293,16 @@ public class LoginForm
 							
 							if(!notGranted)  //login ok
 							{
-								JOptionPane.showMessageDialog(null,"Login Successful!");
+								
 								StudentForm studentPanel = new StudentForm();
 								studentPanel.setVisible(true);
 								Loginregister.dispose();
 							}
 							else 
 							{
-								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+								warning.setText("Username or Password Incorrect");
+								warning.setVisible(true);
 							}
-							
-						
 						}
 						else if(userType.equals("Admin"))
 						{
@@ -312,6 +317,7 @@ public class LoginForm
 					                    String[] spliced = Line.split("\\s+");
 					                    if(spliced[0].equals(id)==true && spliced[1].equals(pwd)==true)
 					                    {
+					                    	adminPackage.AdminForm.ID = spliced[0];
 					                    	notGranted=false;
 					                    	break;
 					                    }				                    
@@ -325,14 +331,15 @@ public class LoginForm
 							
 							if(!notGranted)  //login ok
 							{
-								JOptionPane.showMessageDialog(null, "Login Successful!");
+								
 								AdminForm adminPanel = new AdminForm();
 								adminPanel.setVisible(true);
 								Loginregister.dispose();
 							}
 							else 
 							{
-								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+								warning.setText("Username or Password Incorrect");
+								warning.setVisible(true);
 							}
 						}
 						else if(userType.equals("Staff"))
@@ -347,6 +354,7 @@ public class LoginForm
 					                    String[] spliced = Line.split("\\s+");
 				                    	if(spliced[0].equals(id)==true && spliced[1].equals(pwd)==true)
 					                    {
+				                    		
 					                    	notGranted=false;
 					                    	break;
 					                    }
@@ -360,20 +368,22 @@ public class LoginForm
 							
 							if(!notGranted)  //login ok
 							{
-								JOptionPane.showMessageDialog(null,"Login Successful!");
-								StaffForm staffPanel = new StaffForm();
+								StaffForm staffPanel = null;
+								staffPanel = new StaffForm();
 								staffPanel.setVisible(true);
 								Loginregister.dispose();
 							}
 							else 
 							{
-								JOptionPane.showMessageDialog(null,"Login Unsuccessful!");
+								warning.setText("Username or Password Incorrect");
+								warning.setVisible(true);
 							}
 							
 						}
 						else
 						{
-							JOptionPane.showMessageDialog(null,"Incorrect Option" );
+							warning.setText("Please select a user first");
+							warning.setVisible(true);
 						}
 					}
 				});
@@ -402,7 +412,6 @@ public class LoginForm
 						pwd = new String(pwdField.getPassword());
 					}
 				});
-				pwdField.setToolTipText("");
 				pwdField.setText("Password");
 				pwdField.setForeground(new Color(182, 186, 197));
 				pwdField.setFont(new Font("Quicksand", Font.PLAIN, 12));
@@ -700,6 +709,7 @@ public class LoginForm
 		register.setFont(new Font("Dialog", Font.PLAIN, 10));
 		register.setBounds(269, 448, 118, 13);
 		loginPanel.add(register);
+		
 		
 	}
 }
