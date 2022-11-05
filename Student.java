@@ -27,6 +27,7 @@ public class Student
 	        INPUT_STUDENT_TO_FILE.newLine();
 	        INPUT_STUDENT_TO_FILE.close();
     	}
+    	CHECK.close();
     }
     
     void DeleteStudentFromFile(String val) throws FileNotFoundException, IOException
@@ -39,7 +40,7 @@ public class Student
     	while((Line = DELETE_STUDENT_FROM_FILE.readLine())!=null)
     	{
     		String[] spliced = Line.split("\\s+");
-    		if(spliced[0].equals(val))
+    		if(spliced[0].equals(val)==true)
     		   {
     			  continue;
     		   }
@@ -52,8 +53,7 @@ public class Student
     	DELETE_STUDENT_FROM_FILE.close();
     	del.close();
     	delFile.delete();
-    	tempFile.renameTo(delFile);
-    	
+    	tempFile.renameTo(delFile); 
     }
     
     public Boolean Create_student(String Student_ID, String Student_password, String Student_first_name, String Student_last_name, String Student_phone_number, String Level, String Student_mail, String Student_batch) throws IOException
