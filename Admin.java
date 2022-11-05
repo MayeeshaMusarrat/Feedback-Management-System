@@ -25,7 +25,7 @@ public class Admin extends Staff
     {
 
     }
-    void Add_staff(String Staff_ID, String Staff_password) throws FileNotFoundException, IOException
+    protected void Add_staff(String Staff_ID, String Staff_password) throws FileNotFoundException, IOException
     {
         Create_staff(Staff_ID,Staff_password);
     }
