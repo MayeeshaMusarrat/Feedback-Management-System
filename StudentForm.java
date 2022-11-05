@@ -39,9 +39,9 @@ public class StudentForm extends JFrame
 	JFrame studentFrame;
 	private JPanel contentPane;
 	private JPanel studentGiveFeedbackPanel1;
-	private JTextField txtEgCircuitBoard;
-	private JTextField textField;
 	public static String name,id,level,batch,phone,mail;
+	private JTextField textField;
+	private JTextField textField_1;
 
 	/**
 	 * Create the frame.
@@ -96,10 +96,13 @@ public class StudentForm extends JFrame
 		studentLogoutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				JOptionPane.showMessageDialog(null,"Confirm Logout?");
-				LoginForm window = new LoginForm();
-				window.Loginregister.setVisible(true);
-				dispose();
+				int result = JOptionPane.showConfirmDialog(null,"Confirm Logout?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if(result == JOptionPane.YES_OPTION)
+				{
+					LoginForm window = new LoginForm();
+					window.Loginregister.setVisible(true);
+					dispose();
+				}
 			}
 		});
 		studentSideDecorPanel.setLayout(null);
@@ -132,6 +135,11 @@ public class StudentForm extends JFrame
 		studentSideDecorPanel.add(studentGiveFeedbackButton);
 		
 		JButton studentViewStatusButton = new JButton("View Feedback Status");
+		studentViewStatusButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				studentDashboardPane.setSelectedIndex(2);
+			}
+		});
 		studentViewStatusButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -245,7 +253,7 @@ public class StudentForm extends JFrame
 		studentProfilePanel.add(studentPhoneLabel);
 		
 		JLabel userIcon = new JLabel("");
-		userIcon.setBounds(487, 341, 158, 188);
+		userIcon.setBounds(434, 342, 158, 188);
 		studentProfilePanel.add(userIcon);
 		userIcon.setIcon(new ImageIcon(userImg));
 		
@@ -272,15 +280,13 @@ public class StudentForm extends JFrame
 		
 		JLabel studentEmailShowLabel = new JLabel(mail);
 		studentEmailShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentEmailShowLabel.setBounds(219, 483, 327, 32);
+		studentEmailShowLabel.setBounds(209, 483, 337, 32);
 		studentProfilePanel.add(studentEmailShowLabel);
 		
 		JLabel studentPhoneShowLabel = new JLabel(phone);
 		studentPhoneShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
 		studentPhoneShowLabel.setBounds(219, 542, 327, 24);
 		studentProfilePanel.add(studentPhoneShowLabel);
-		
-		/// ========================================== STUDENT GIVE FEEDBACK PANEL ============================================================/// 
 		
 		JPanel studentGiveFeedbackPanel = new JPanel();
 		studentGiveFeedbackPanel.setLayout(null);
@@ -301,11 +307,11 @@ public class StudentForm extends JFrame
 		JButton btnNewButton = new JButton("Submit");
 		btnNewButton.setForeground(Color.WHITE);
 		btnNewButton.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnNewButton.setFocusPainted(false);
 		btnNewButton.setBorder(null);
 		btnNewButton.setBackground(new Color(51, 181, 165));
 		btnNewButton.setBounds(293, 586, 164, 38);
 		studentGiveFeedbackPanel.add(btnNewButton);
-		btnNewButton.setFocusPainted(false);
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -313,7 +319,6 @@ public class StudentForm extends JFrame
 		comboBox.setBackground(Color.WHITE);
 		comboBox.setBounds(340, 94, 312, 23);
 		studentGiveFeedbackPanel.add(comboBox);
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"- Category - ", "Technical", "Furniture and Fittings", "Network", "Others"}));
 		
 		JComboBox comboBox_1 = new JComboBox();
 		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -321,44 +326,18 @@ public class StudentForm extends JFrame
 		comboBox_1.setBackground(Color.WHITE);
 		comboBox_1.setBounds(340, 162, 312, 23);
 		studentGiveFeedbackPanel.add(comboBox_1);
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"- Sub-category -"}));
-
-		comboBox.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent e) 
-			{
-				if(comboBox.getSelectedItem().toString().equals("Technical"))
-				{
-					String[] test_1 = {"- Sub-category -","Light","Fan","Switch","Circuit Board","Multiplug","Projector","Keyboard","Power cord","Interactive Whiteboard","Miscellaneous"};
-			        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel(test_1);
-			        comboBox_1.setModel(defaultComboBoxModel);
-				}
-				else if(comboBox.getSelectedItem().toString().equals("Furniture and Fittings"))
-				{
-					String[] test_1 = {"- Sub-category -","Tables","Chairs","Doors","Windows","Podium"};
-			        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel(test_1);
-			        comboBox_1.setModel(defaultComboBoxModel);
-				}
-				else if(comboBox.getSelectedItem().toString().equals("Network"))
-				{
-					String[] test_1 = {"- Sub-category -","Wi-fi","Broadband"};
-			        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel(test_1);
-			        comboBox_1.setModel(defaultComboBoxModel);
-				}
-			}
-		});
 		
 		JLabel lblNewLabel_3_1 = new JLabel("Subject Matter:");
 		lblNewLabel_3_1.setFont(new Font("Dialog", Font.PLAIN, 14));
 		lblNewLabel_3_1.setBounds(93, 356, 145, 20);
 		studentGiveFeedbackPanel.add(lblNewLabel_3_1);
 		
-		txtEgCircuitBoard = new JTextField();
-		txtEgCircuitBoard.setFont(new Font("Dialog", Font.PLAIN, 11));
-		txtEgCircuitBoard.setText("e.g. Circuit board is broken");
-		txtEgCircuitBoard.setColumns(10);
-		txtEgCircuitBoard.setBounds(340, 356, 312, 23);
-		studentGiveFeedbackPanel.add(txtEgCircuitBoard);
+		textField = new JTextField();
+		textField.setText("e.g. Circuit board is broken");
+		textField.setFont(new Font("Dialog", Font.PLAIN, 11));
+		textField.setColumns(10);
+		textField.setBounds(340, 356, 312, 23);
+		studentGiveFeedbackPanel.add(textField);
 		
 		JLabel lblNewLabel_3_1_1 = new JLabel("Description (Optional):");
 		lblNewLabel_3_1_1.setFont(new Font("Dialog", Font.PLAIN, 14));
@@ -375,11 +354,11 @@ public class StudentForm extends JFrame
 		lblNewLabel_3_1_2.setBounds(93, 293, 145, 20);
 		studentGiveFeedbackPanel.add(lblNewLabel_3_1_2);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		textField.setColumns(10);
-		textField.setBounds(340, 294, 312, 23);
-		studentGiveFeedbackPanel.add(textField);
+		textField_1 = new JTextField();
+		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		textField_1.setColumns(10);
+		textField_1.setBounds(340, 294, 312, 23);
+		studentGiveFeedbackPanel.add(textField_1);
 		
 		JLabel lblNewLabel_3_1_2_1 = new JLabel("Severity of the Issue:");
 		lblNewLabel_3_1_2_1.setFont(new Font("Dialog", Font.PLAIN, 14));
@@ -387,19 +366,15 @@ public class StudentForm extends JFrame
 		studentGiveFeedbackPanel.add(lblNewLabel_3_1_2_1);
 		
 		JComboBox comboBox_1_1 = new JComboBox();
-		comboBox_1_1.setModel(new DefaultComboBoxModel(new String[] {"- Severity -", "Trivial", "Moderate", "Urgent"}));
 		comboBox_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBox_1_1.setEditable(true);
 		comboBox_1_1.setBackground(Color.WHITE);
 		comboBox_1_1.setBounds(340, 231, 312, 23);
 		studentGiveFeedbackPanel.add(comboBox_1_1);
 		
-		/// =============================================== STUDENT VIEW STATUS PANEL =================================================================== ///
-		
-		JPanel studentViewStatusPanel = new JPanel();
-		studentViewStatusPanel.setBackground(new Color(255, 255, 255));
-		studentDashboardPane.addTab("New tab", null, studentViewStatusPanel, null);
-		studentViewStatusPanel.setLayout(null);
+		JPanel studentViewFeebackPanel = new JPanel();
+		studentViewFeebackPanel.setBackground(new Color(255, 255, 255));
+		studentDashboardPane.addTab("New tab", null, studentViewFeebackPanel, null);
 		
 		
  }
