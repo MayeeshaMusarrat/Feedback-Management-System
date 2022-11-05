@@ -41,14 +41,9 @@ public class Student
     	{
     		String[] spliced = Line.split("\\s+");
     		if(spliced[0].equals(val)==true)
-    		   {
     			  continue;
-    		   }
-    		else
-    		{
-    		   del.write(Line);
-    		   del.newLine();
-    		}
+		    del.write(Line);
+		    del.newLine();
     	}
     	DELETE_STUDENT_FROM_FILE.close();
     	del.close();
