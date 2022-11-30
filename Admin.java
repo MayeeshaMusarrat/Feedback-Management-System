@@ -1,8 +1,11 @@
 package adminPackage;
 import staffPackage.*;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 
 public class Admin extends Staff
@@ -21,49 +24,65 @@ public class Admin extends Staff
         this.Admin_ID=Admin_ID;
         InputAdminToFile();
     }
-    void Admin_login()
-    {
-
-    }
     protected void Add_staff(String Staff_ID, String Staff_password) throws FileNotFoundException, IOException
     {
         Create_staff(Staff_ID,Staff_password);
     }
     void View_feedback() throws IOException
     {
-       /* BufferedReader in = new BufferedReader(new FileReader("Student_Issues.txt"));
-        String line = in.readLine();
-        int index=1;
-        while (line != null) {
-            System.out.println(index + "   "+ line + " "+Global_variable.Status_of_issue);
-            line = in.readLine();
-            ++index;
-        }
-        in.close();*/
+       
     }
-    void Address_feedback() throws IOException
+    void Address_feedback(String status,String changeFrom,int lineNumber) throws IOException
     {
-       /* View_feedback();
-        String status_user[]={"Pending", "In-progress", "Responded"};
-        System.out.print("Choose issue number to solve: ");
-        try (Scanner input = new Scanner(System.in)) {
-			int index_user=input.nextInt();
-			Addressed_issue_status();
-			int status=input.nextInt();
-			BufferedReader in = new BufferedReader(new FileReader("Student_Issues.txt"));
-			String line = in.readLine();
-			int Line_number=1;
-			while (line != null) {
-			    line = in.readLine();
-			    if(Line_number==index_user)
-			    {
-			        gv.Status_of_issue=status_user[status-1];
-			        break;
-			    }
-			    ++Line_number;
-			}
-			in.close();
-		}*/
+     	 BufferedReader DELETE_ISSUE_FROM_FILE = null;
+    	 BufferedWriter COPY_ISSUES_TO_FILE = null;
+    	 BufferedWriter UPDATE_ISSUE_TO_FILE = null;
+    	 File tempFile=null;
+    	 File mainFile=null;
+      if(status.equals("inProgress") && changeFrom.equals("pending"))
+      {
+    	  tempFile = new File("temp.txt"); //deleting the said line from pending file
+    	  mainFile = new File("Student_pending_issues.txt");
+    	  DELETE_ISSUE_FROM_FILE = new BufferedReader(new FileReader(mainFile));
+    	  COPY_ISSUES_TO_FILE = new BufferedWriter(new FileWriter(tempFile));
+    	  UPDATE_ISSUE_TO_FILE = new BufferedWriter(new FileWriter("Student_inProgress_issues.txt"));
+      }
+      String Line = null;
+	  int reached = 0,cnt=0;
+	  Boolean done = false;
+      while((Line = DELETE_ISSUE_FROM_FILE.readLine())!=null)
+	  {
+		   if(reached==lineNumber && done==false)
+    		{
+	    		for(int k=0;k<9;++k) //skip 10 times
+	    			{
+	    			  UPDATE_ISSUE_TO_FILE.write(Line);
+	    			  UPDATE_ISSUE_TO_FILE.newLine();
+	    			  Line=DELETE_ISSUE_FROM_FILE.readLine();
+	    			}
+	    	UPDATE_ISSUE_TO_FILE.close();
+	    	done=true;
+	    		
+    		}
+		   else
+		   {
+			    COPY_ISSUES_TO_FILE.write(Line);
+			    COPY_ISSUES_TO_FILE.newLine();
+		    	++cnt;
+		    	if(cnt==10 && done==false)
+		    		{
+			    		++reached;
+			    		cnt=0;
+		    		}
+		   }
+	  }
+      COPY_ISSUES_TO_FILE.close();
+      DELETE_ISSUE_FROM_FILE.close();
+      mainFile.delete();
+      tempFile.renameTo(mainFile);
+      
+      
+      
 
     }
 
