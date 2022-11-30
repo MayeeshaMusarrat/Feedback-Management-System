@@ -33,4 +33,9 @@ public class Staff extends Student
     {
     	Remove_student(val);
     }
+    void Modify_student(int i,String Student_ID, String Student_password, String Student_first_name, String Student_last_name,
+    		  String Level, String Student_phone_number, String Student_mail, String Student_batch) throws FileNotFoundException, IOException
+    {
+    	replaceStudentInFile(i,Student_ID,Student_password,  Student_first_name, Student_last_name, Level, Student_phone_number,Student_mail, Student_batch);
+    }
 }
