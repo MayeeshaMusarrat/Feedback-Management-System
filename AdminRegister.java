@@ -1,5 +1,4 @@
 package LoginRegisterPackage;
-import java.awt.EventQueue;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -146,5 +145,6 @@ public class AdminRegister extends JFrame {
 		goBack.setBounds(750, 438, 24, 16);
 		contentPane.add(goBack);
 		Admin admin_class = new Admin();
+		
 	}
 }
