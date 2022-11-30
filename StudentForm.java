@@ -3,6 +3,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import LoginRegisterPackage.*;
 
@@ -11,6 +14,13 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.Image;
@@ -22,6 +32,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -32,6 +43,8 @@ import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
 
 public class StudentForm extends JFrame 
 {
@@ -39,9 +52,12 @@ public class StudentForm extends JFrame
 	JFrame studentFrame;
 	private JPanel contentPane;
 	private JPanel studentGiveFeedbackPanel1;
-	public static String name,id,level,batch,phone,mail;
-	private JTextField textField;
-	private JTextField textField_1;
+	public static String name,id,level,batch,phone,mail,pwd,fileName;
+	private JTextField studentIssueSubjectMatter;
+	private JTextField studentIssueLocation;
+	private JTextField filePathTextField;
+	private JTable studentViewStatusTable;
+	public int serial = 1;
 
 	/**
 	 * Create the frame.
@@ -54,7 +70,7 @@ public class StudentForm extends JFrame
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1098, 663);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(null);
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		//studentFrame.setUndecorated(true);
@@ -249,7 +265,7 @@ public class StudentForm extends JFrame
 		
 		JLabel studentPhoneLabel = new JLabel("Phone Number:");
 		studentPhoneLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentPhoneLabel.setBounds(89, 545, 140, 19);
+		studentPhoneLabel.setBounds(89, 532, 140, 19);
 		studentProfilePanel.add(studentPhoneLabel);
 		
 		JLabel userIcon = new JLabel("");
@@ -285,7 +301,7 @@ public class StudentForm extends JFrame
 		
 		JLabel studentPhoneShowLabel = new JLabel(phone);
 		studentPhoneShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentPhoneShowLabel.setBounds(219, 542, 327, 24);
+		studentPhoneShowLabel.setBounds(219, 527, 327, 24);
 		studentProfilePanel.add(studentPhoneShowLabel);
 		
 		JPanel studentGiveFeedbackPanel = new JPanel();
@@ -295,86 +311,408 @@ public class StudentForm extends JFrame
 		studentDashboardPane.addTab("New tab", null, studentGiveFeedbackPanel, null);
 		
 		JLabel lblNewLabel = new JLabel("Select category:");
-		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel.setBounds(93, 89, 131, 33);
+		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel.setBounds(37, 176, 131, 33);
 		studentGiveFeedbackPanel.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Select Sub-category:");
-		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel_1.setBounds(93, 157, 145, 33);
+		lblNewLabel_1.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel_1.setBounds(37, 219, 145, 33);
 		studentGiveFeedbackPanel.add(lblNewLabel_1);
 		
-		JButton btnNewButton = new JButton("Submit");
-		btnNewButton.setForeground(Color.WHITE);
-		btnNewButton.setFont(new Font("Dialog", Font.BOLD, 15));
-		btnNewButton.setFocusPainted(false);
-		btnNewButton.setBorder(null);
-		btnNewButton.setBackground(new Color(51, 181, 165));
-		btnNewButton.setBounds(293, 586, 164, 38);
-		studentGiveFeedbackPanel.add(btnNewButton);
+		JButton studentSubmitIssueButton = new JButton("Submit");
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setEditable(true);
-		comboBox.setBackground(Color.WHITE);
-		comboBox.setBounds(340, 94, 312, 23);
-		studentGiveFeedbackPanel.add(comboBox);
+		studentSubmitIssueButton.setForeground(Color.WHITE);
+		studentSubmitIssueButton.setFont(new Font("Dialog", Font.BOLD, 15));
+		studentSubmitIssueButton.setFocusPainted(false);
+		studentSubmitIssueButton.setBorder(null);
+		studentSubmitIssueButton.setBackground(new Color(51, 181, 165));
+		studentSubmitIssueButton.setBounds(204, 608, 145, 33);
+		studentGiveFeedbackPanel.add(studentSubmitIssueButton);
+
+		JComboBox studentIssueSubcategory = new JComboBox();
+		studentIssueSubcategory.setFont(new Font("Dialog", Font.PLAIN, 12));
+		studentIssueSubcategory.setEditable(true);
+		studentIssueSubcategory.setBackground(Color.WHITE);
+		studentIssueSubcategory.setBounds(178, 223, 257, 23);
+		studentIssueSubcategory.setModel(new DefaultComboBoxModel(new String[] {"- Sub-category -"}));
+		studentGiveFeedbackPanel.add(studentIssueSubcategory);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1.setEditable(true);
-		comboBox_1.setBackground(Color.WHITE);
-		comboBox_1.setBounds(340, 162, 312, 23);
-		studentGiveFeedbackPanel.add(comboBox_1);
+		JComboBox studentIssueCategory = new JComboBox();
+		studentIssueCategory.setModel(new DefaultComboBoxModel(new String[] {"- Category - ", "Technical", "Furniture and Fittings", "Network", "Others"}));
+		studentIssueCategory.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(studentIssueCategory.getSelectedItem().toString().equals("Technical"))
+					{
+						String[] test_1 = {"- Sub-category -","Light","Fan","AC","Switch","Circuit Board","Multiplug","Projector","Keyboard","Power cord","Interactive Whiteboard","Miscellaneous"};
+				        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel(test_1);
+				        studentIssueSubcategory.setModel(defaultComboBoxModel);
+					}
+					else if(studentIssueCategory.getSelectedItem().toString().equals("Furniture and Fittings"))
+					{
+						String[] test_1 = {"- Sub-category -","Tables","Chairs","Doors","Windows","Podium"};
+				        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel(test_1);
+				        studentIssueSubcategory.setModel(defaultComboBoxModel);
+					}
+					else if(studentIssueCategory.getSelectedItem().toString().equals("Network"))
+					{
+						String[] test_1 = {"- Sub-category -","Wi-fi","Broadband"};
+				        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel(test_1);
+				        studentIssueSubcategory.setModel(defaultComboBoxModel);
+					}
+				}
+		});
+		studentIssueCategory.setFont(new Font("Dialog", Font.PLAIN, 12));
+		studentIssueCategory.setEditable(true);
+		studentIssueCategory.setBackground(Color.WHITE);
+		studentIssueCategory.setBounds(178, 180, 257, 23);
+		studentGiveFeedbackPanel.add(studentIssueCategory);
+		
 		
 		JLabel lblNewLabel_3_1 = new JLabel("Subject Matter:");
-		lblNewLabel_3_1.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel_3_1.setBounds(93, 356, 145, 20);
+		lblNewLabel_3_1.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel_3_1.setBounds(37, 352, 145, 20);
 		studentGiveFeedbackPanel.add(lblNewLabel_3_1);
 		
-		textField = new JTextField();
-		textField.setText("e.g. Circuit board is broken");
-		textField.setFont(new Font("Dialog", Font.PLAIN, 11));
-		textField.setColumns(10);
-		textField.setBounds(340, 356, 312, 23);
-		studentGiveFeedbackPanel.add(textField);
+		studentIssueSubjectMatter = new JTextField();
+		studentIssueSubjectMatter.setText("e.g. Circuit board is broken");
+		studentIssueSubjectMatter.setFont(new Font("Dialog", Font.PLAIN, 11));
+		studentIssueSubjectMatter.setColumns(10);
+		studentIssueSubjectMatter.setBounds(178, 351, 257, 23);
+		studentGiveFeedbackPanel.add(studentIssueSubjectMatter);
 		
 		JLabel lblNewLabel_3_1_1 = new JLabel("Description (Optional):");
-		lblNewLabel_3_1_1.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel_3_1_1.setBounds(93, 415, 145, 20);
+		lblNewLabel_3_1_1.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel_3_1_1.setBounds(37, 434, 145, 20);
 		studentGiveFeedbackPanel.add(lblNewLabel_3_1_1);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
-		textArea.setBounds(87, 451, 565, 98);
-		studentGiveFeedbackPanel.add(textArea);
+		JTextArea descriptionText = new JTextArea();
+		descriptionText.setBorder(new LineBorder(new Color(0, 0, 0)));
+		descriptionText.setBounds(37, 464, 656, 124);
+		studentGiveFeedbackPanel.add(descriptionText);
+		descriptionText.setLineWrap(true);
+		descriptionText.setWrapStyleWord(true);
+
 		
 		JLabel lblNewLabel_3_1_2 = new JLabel("Location: ");
-		lblNewLabel_3_1_2.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel_3_1_2.setBounds(93, 293, 145, 20);
+		lblNewLabel_3_1_2.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel_3_1_2.setBounds(37, 310, 145, 20);
 		studentGiveFeedbackPanel.add(lblNewLabel_3_1_2);
 		
-		textField_1 = new JTextField();
-		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		textField_1.setColumns(10);
-		textField_1.setBounds(340, 294, 312, 23);
-		studentGiveFeedbackPanel.add(textField_1);
+		studentIssueLocation = new JTextField();
+		studentIssueLocation.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		studentIssueLocation.setColumns(10);
+		studentIssueLocation.setBounds(178, 310, 257, 23);
+		studentGiveFeedbackPanel.add(studentIssueLocation);
 		
 		JLabel lblNewLabel_3_1_2_1 = new JLabel("Severity of the Issue:");
-		lblNewLabel_3_1_2_1.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel_3_1_2_1.setBounds(93, 232, 145, 20);
+		lblNewLabel_3_1_2_1.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel_3_1_2_1.setBounds(37, 270, 145, 20);
 		studentGiveFeedbackPanel.add(lblNewLabel_3_1_2_1);
 		
-		JComboBox comboBox_1_1 = new JComboBox();
-		comboBox_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1_1.setEditable(true);
-		comboBox_1_1.setBackground(Color.WHITE);
-		comboBox_1_1.setBounds(340, 231, 312, 23);
-		studentGiveFeedbackPanel.add(comboBox_1_1);
+		JComboBox studentIssueSeverity = new JComboBox();
+		studentIssueSeverity.setModel(new DefaultComboBoxModel(new String[] {"-select severity - ", "Trivial", "Moderate", "Urgent"}));
+		studentIssueSeverity.setFont(new Font("Dialog", Font.PLAIN, 12));
+		studentIssueSeverity.setEditable(true);
+		studentIssueSeverity.setBackground(Color.WHITE);
+		studentIssueSeverity.setBounds(178, 268, 257, 23);
+		studentGiveFeedbackPanel.add(studentIssueSeverity);
+		
+		JPanel studentWelcomePanel_1 = new JPanel();
+		studentWelcomePanel_1.setLayout(null);
+		studentWelcomePanel_1.setBorder(null);
+		studentWelcomePanel_1.setBackground(new Color(51, 181, 165));
+		studentWelcomePanel_1.setBounds(-5, 45, 751, 103);
+		studentGiveFeedbackPanel.add(studentWelcomePanel_1);
+		
+		JLabel lblKindlyFillUp = new JLabel("Kindly fill up the form carefully to submit a feedback");
+		lblKindlyFillUp.setForeground(Color.WHITE);
+		lblKindlyFillUp.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblKindlyFillUp.setBounds(46, 41, 439, 23);
+		studentWelcomePanel_1.add(lblKindlyFillUp);
+		
+		JLabel addPicLabel = new JLabel("                          Add picture");
+		addPicLabel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		addPicLabel.setFont(new Font("Dialog", Font.PLAIN, 11));
+		addPicLabel.setBounds(471, 176, 222, 239);
+		studentGiveFeedbackPanel.add(addPicLabel);
+		
+		filePathTextField = new JTextField();
+		filePathTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		filePathTextField.setColumns(10);
+		filePathTextField.setBounds(178, 393, 257, 23);
+		studentGiveFeedbackPanel.add(filePathTextField);
+		
+		JButton browsePictureButton = new JButton("Browse Picture");
+		browsePictureButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser Chooser = new JFileChooser();
+				Chooser.showOpenDialog(null);
+				File picFile = Chooser.getSelectedFile();
+				fileName = picFile.getAbsolutePath();
+				
+				filePathTextField.setText(fileName);
+				ImageIcon Icon = new ImageIcon(fileName);
+				Image img = Icon.getImage().getScaledInstance(addPicLabel.getWidth(), addPicLabel.getHeight(),Image.SCALE_SMOOTH);
+				addPicLabel.setIcon(new ImageIcon(img));
+			}
+		});
+		
+		browsePictureButton.setForeground(Color.WHITE);
+		browsePictureButton.setFont(new Font("Dialog", Font.BOLD, 12));
+		browsePictureButton.setFocusPainted(false);
+		browsePictureButton.setBorder(null);
+		browsePictureButton.setBackground(new Color(51, 181, 165));
+		browsePictureButton.setBounds(37, 392, 109, 23);
+		studentGiveFeedbackPanel.add(browsePictureButton);
+	
+		
+		JButton studentClearFormButton = new JButton("Clear Form");
+		studentClearFormButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				studentIssueCategory.setModel(new DefaultComboBoxModel(new String[] {"- Category - ", "Technical", "Furniture and Fittings", "Network", "Others"}));
+				studentIssueSubcategory.setModel(new DefaultComboBoxModel(new String[] {"- Sub-category -"}));
+				studentIssueSeverity.setModel(new DefaultComboBoxModel(new String[] {"- Select severity -"}));
+				studentIssueLocation.setText("");
+				studentIssueSubjectMatter.setText("e.g Circuit board is broken");
+				filePathTextField.setText("");
+				addPicLabel.setIcon(null);
+				descriptionText.setText("");
+			}
+		});
+		studentClearFormButton.setForeground(Color.WHITE);
+		studentClearFormButton.setFont(new Font("Dialog", Font.BOLD, 15));
+		studentClearFormButton.setFocusPainted(false);
+		studentClearFormButton.setBorder(null);
+		studentClearFormButton.setBackground(new Color(51, 181, 165));
+		studentClearFormButton.setBounds(390, 608, 145, 33);
+		studentGiveFeedbackPanel.add(studentClearFormButton);
 		
 		JPanel studentViewFeebackPanel = new JPanel();
 		studentViewFeebackPanel.setBackground(new Color(255, 255, 255));
 		studentDashboardPane.addTab("New tab", null, studentViewFeebackPanel, null);
+		studentViewFeebackPanel.setLayout(null);
+		
+		JPanel studentWelcomePanel_1_1 = new JPanel();
+		studentWelcomePanel_1_1.setLayout(null);
+		studentWelcomePanel_1_1.setBorder(null);
+		studentWelcomePanel_1_1.setBackground(new Color(51, 181, 165));
+		studentWelcomePanel_1_1.setBounds(0, 46, 751, 103);
+		studentViewFeebackPanel.add(studentWelcomePanel_1_1);
+		
+		JLabel lblKindlyFillUp_1 = new JLabel("");
+		lblKindlyFillUp_1.setForeground(Color.WHITE);
+		lblKindlyFillUp_1.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblKindlyFillUp_1.setBounds(46, 41, 439, 23);
+		studentWelcomePanel_1_1.add(lblKindlyFillUp_1);
+		
+		JLabel lblViewStatusOf = new JLabel("View status of the lodged feedbacks");
+		lblViewStatusOf.setForeground(Color.WHITE);
+		lblViewStatusOf.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblViewStatusOf.setBounds(24, 41, 439, 23);
+		studentWelcomePanel_1_1.add(lblViewStatusOf);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(28, 187, 676, 437);
+		studentViewFeebackPanel.add(scrollPane);
+		
+		studentViewStatusTable = new JTable();
+		scrollPane.setViewportView(studentViewStatusTable);
+		
+		DefaultTableModel model = new DefaultTableModel();
+		Object[] column = {"Category","Sub-category","Location","Severity","Date","Time","Status"};
+		Object[] row = new Object[10];
+		model.setColumnIdentifiers(column);
+		studentViewStatusTable.setModel(model);
+		DefaultTableCellRenderer render = new DefaultTableCellRenderer();
+		render.setHorizontalAlignment(JLabel.CENTER);
+		studentViewStatusTable.setForeground(new Color(35, 45, 65));
+		studentViewStatusTable.setBackground(new Color(255, 255, 255));
+		studentViewStatusTable.setFont(new Font("Dialog", Font.PLAIN, 10));
+		scrollPane.setViewportView(studentViewStatusTable);
+		
+		int size =studentViewStatusTable.getColumnCount();
+		JTableHeader header = studentViewStatusTable.getTableHeader();
+		header.setBackground(new Color(35,45,65));
+		header.setForeground(Color.WHITE);
+		header.setFont(new Font("Dialog", Font.BOLD, 12));
+		for(int i=0;i<size;i++)
+		{
+			studentViewStatusTable.getColumnModel().getColumn(i).setCellRenderer(render);
+			studentViewStatusTable.getColumnModel().getColumn(i).setResizable(false);
+	    }
+		
+		studentViewStatusTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+		studentViewStatusTable.getColumnModel().getColumn(1).setPreferredWidth(30);
+		studentViewStatusTable.getColumnModel().getColumn(2).setPreferredWidth(20);
+		studentViewStatusTable.getColumnModel().getColumn(3).setPreferredWidth(10);
+		studentViewStatusTable.getColumnModel().getColumn(4).setPreferredWidth(20);
+		studentViewStatusTable.getColumnModel().getColumn(5).setPreferredWidth(20);
+		studentViewStatusTable.getColumnModel().getColumn(6).setPreferredWidth(40);
+		
+		scrollPane.getViewport().setBackground(Color.WHITE);
+		scrollPane.setViewportBorder(null);
+		
+		studentSubmitIssueButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				Student student = new Student();
+				try 
+				{
+					//"Category","Sub-category","Location","Severity","Date","Time","Status"
+					String cat = studentIssueCategory.getSelectedItem().toString();
+					String subcat = studentIssueSubcategory.getSelectedItem().toString();
+					Object obj = studentIssueSeverity.getSelectedItem();
+					String sev = obj.toString();
+					String loc = studentIssueLocation.getText();
+					String matter = studentIssueSubjectMatter.getText();
+					String filename = filePathTextField.getText();
+					String description = descriptionText.getText();
+					LocalDateTime dateAndTime=LocalDateTime.now();
+			        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+			        String Formatted_date_and_time = format.format(dateAndTime);
+					String dt[] = Formatted_date_and_time.split("\\s+");
+					
+					row[0] = cat;
+					row[1] = subcat;
+					row[2] = loc;
+					row[3] = sev;
+					row[4] = dt[0];
+					row[5] = dt[1];
+					row[6] = "Pending";
+					model.addRow(row);
+					student.lodge_Feedback(id,cat,subcat, sev,loc,matter,filename, description,dt[0],dt[1]);
+					
+					
+					
+					
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		
+		
+		
+		try 
+		{
+			BufferedReader in = new BufferedReader(new FileReader("Student_pending_issues.txt"));
+			String Line = null;
+			int cnt = 1,Number = 0;
+			Boolean read = false;
+			//System.out.println(id);
+			while( (Line = in.readLine() )!=null)
+			{
+				//"Category","Sub-category","Location","Severity","Date","Time","Status"
+				//System.out.println(Line);
+				if(Line.equals(id))
+					read = true;
+				if(read)
+				{
+					row[0] = serial;	
+					++Number;
+					if(Number == 1|| Number == 6 || Number == 7 || Number == 8)
+						continue;
+					row[cnt++] = Line;
+					if(cnt == 7) //working!
+					{
+						row[cnt] = "Pending";
+						model.addRow(row);
+						cnt = 1;
+						Number = 0;
+						++serial;
+						read = false;
+					}
+				}
+			}
+			in.close();
+		} 
+		catch (IOException e2) 
+		{
+			e2.printStackTrace();
+		}
+		try 
+		{
+			BufferedReader in = new BufferedReader(new FileReader("Student_inProgress_issues.txt"));
+			String Line = null;
+			int cnt = 1,Number = 0;
+			Boolean read = false;
+			//System.out.println(id);
+			while( (Line = in.readLine() )!=null)
+			{
+				//"Category","Sub-category","Location","Severity","Date","Time","Status"
+				//System.out.println(Line);
+				if(Line.equals(id))
+					read = true;
+				if(read)
+				{
+					row[0] = serial;	
+					++Number;
+					if(Number == 1|| Number == 6 || Number == 7 || Number == 8)
+						continue;
+					row[cnt++] = Line;
+					if(cnt == 7) //working!
+					{
+						row[cnt] = "In-progress";
+						model.addRow(row);
+						cnt = 1;
+						Number = 0;
+						++serial;
+						read = false;
+					}
+				}
+			}
+			in.close();
+		} 
+		catch (IOException e2) 
+		{
+			e2.printStackTrace();
+		}
+		try 
+		{
+			BufferedReader in = new BufferedReader(new FileReader("Student_completed_issues.txt"));
+			String Line = null;
+			int cnt = 1,Number = 0;
+			Boolean read = false;
+			//System.out.println(id);
+			while( (Line = in.readLine() )!=null)
+			{
+				if(Line.equals(id))
+					read = true;
+				if(read)
+				{
+					row[0] = serial;	
+					++Number;
+					if(Number == 1|| Number == 6 || Number == 7 || Number == 8)
+						continue;
+					row[cnt++] = Line;
+					if(cnt == 7) //working!
+					{
+						row[cnt] = "Completed";
+						model.addRow(row);
+						cnt = 1;
+						Number = 0;
+						++serial;
+						read = false;
+					}
+				}
+			}
+			in.close();
+		} 
+		catch (IOException e2) 
+		{
+			e2.printStackTrace();
+		}
+		
+		
 		
 		
  }
