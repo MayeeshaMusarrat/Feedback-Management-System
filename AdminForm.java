@@ -14,6 +14,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
@@ -40,7 +45,10 @@ public class AdminForm extends JFrame {
 	private JTextField textField_3;
 	private JTextField textField_4;
 	private JTextField textField_5;
-	private JTable studentIssueTable;
+	static JTable studentIssueTable;
+	public String issueStatus,name;
+	static DefaultTableModel model;
+	public int lineNumber;
 	/**
 	 * Create the frame.
 	 */
@@ -237,7 +245,7 @@ public class AdminForm extends JFrame {
 		
 		JTabbedPane feedbackPane = new JTabbedPane(JTabbedPane.TOP);
 		feedbackPane.setBackground(new Color(255, 255, 255));
-		feedbackPane.setBounds(-12, -48, 763, 722);
+		feedbackPane.setBounds(0, -48, 751, 701);
 		adminAddressFeedbackPanel.add(feedbackPane);
 		feedbackPane.setVisible(false);
 		
@@ -260,15 +268,26 @@ public class AdminForm extends JFrame {
 		pendingStudentIssueDecor.add(lblPendingStudentIssues);
 		
 		JScrollPane scrollPane1 = new JScrollPane();
-		scrollPane1.setBounds(32, 156, 685, 355);
+		scrollPane1.setBounds(25, 157, 681, 355);
 		studentpendingPanel.add(scrollPane1);
 		
 		studentIssueTable = new JTable();
+		studentIssueTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//when user clicks on a row, and selects "view details", then all the details of that particular row is shown to him
+				//do it using line numbers and row numbers to avoid problems
+				
+				lineNumber = studentIssueTable.getSelectedRow();
+				issueStatus = "pending";
+				
+			}
+		});
 		scrollPane1.setViewportView(studentIssueTable);
 		
-		DefaultTableModel model = new DefaultTableModel();
-		Object[] column = {"ID", "Category","Sub-category","Location","Severity","Date","Time"};
-		Object[] row = new Object[8];
+		model = new DefaultTableModel();
+		Object[] column = {"ID", "Category","Sub-category","Severity","Location","Date","Time"};
+		Object[] row = new Object[10];
 		model.setColumnIdentifiers(column);
 		studentIssueTable.setModel(model);
 		DefaultTableCellRenderer render = new DefaultTableCellRenderer();
@@ -288,6 +307,33 @@ public class AdminForm extends JFrame {
 	         studentIssueTable.getColumnModel().getColumn(i).setCellRenderer(render);
 	         studentIssueTable.getColumnModel().getColumn(i).setResizable(false);
 	    }
+		
+		try 
+		{
+			BufferedReader in = new BufferedReader(new FileReader("Student_pending_issues.txt"));
+			String Line = null;
+			int cnt = 0,Number = 0;
+			while( (Line = in.readLine() )!=null)
+			{
+				//System.out.println(Line);
+				//{"Name","Student ID", "Password","Batch","Level","Email","Phone Number"};
+				++Number;
+				if(Number == 6 || Number == 7 || Number == 8)
+					continue;
+				row[cnt++] = Line;
+				if(cnt == 7)
+				{
+					model.addRow(row);
+					cnt = 0;
+					Number = 0;
+				}
+			}
+			in.close();
+		} 
+		catch (IOException e2) 
+		{
+			e2.printStackTrace();
+		}
 		
 		studentIssueTable.getColumnModel().getColumn(0).setPreferredWidth(0);
 		studentIssueTable.getColumnModel().getColumn(1).setPreferredWidth(30);
@@ -318,8 +364,15 @@ public class AdminForm extends JFrame {
 		JButton btnViewDetails = new JButton("View Details");
 		btnViewDetails.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				detailsFrame detail = new detailsFrame();
-				detail.setVisible(true);
+				detailsFrame detail;
+				try {
+					detail = new detailsFrame(lineNumber,issueStatus); //send the id as parameter
+					detail.setVisible(true);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		btnViewDetails.setForeground(Color.WHITE);
@@ -592,7 +645,18 @@ public class AdminForm extends JFrame {
 		inProgressStudentIssueButton.setBounds(283, 206, 156, 126);
 		adminAddressFeedbackPanel.add(inProgressStudentIssueButton);
 		inProgressStudentIssueButton.setLayout(null);
+		
+		JLabel inProgressLabel = new JLabel("");
+		inProgressLabel.setBounds(47, 10, 82, 93);
+		inProgressStudentIssueButton.add(inProgressLabel);
 		Image inProgress = new ImageIcon(this.getClass().getResource("/inProgress.png")).getImage();
+		inProgressLabel.setIcon(new ImageIcon(inProgress));
+		
+		JLabel lblNewLabel_4 = new JLabel("In-progress");
+		lblNewLabel_4.setForeground(new Color(255, 255, 255));
+		lblNewLabel_4.setFont(new Font("Poppins Medium", Font.PLAIN, 11));
+		lblNewLabel_4.setBounds(45, 98, 72, 13);
+		inProgressStudentIssueButton.add(lblNewLabel_4);
 		
 		JPanel topDecorPanel = new JPanel();
 		topDecorPanel.setLayout(null);
@@ -648,15 +712,31 @@ public class AdminForm extends JFrame {
 				feedbackPane.setSelectedIndex(4);
 				feedbackPane.setVisible(true);
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				inProgressStaffIssueButton.setBackground(new Color(83,169,255));
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				inProgressStaffIssueButton.setBackground(new Color(45, 150, 255));
+			}
 		});
 		inProgressStaffIssueButton.setLayout(null);
 		inProgressStaffIssueButton.setBackground(new Color(45, 150, 255));
-		inProgressStaffIssueButton.setBounds(283, 442, 167, 126);
+		inProgressStaffIssueButton.setBounds(283, 442, 156, 126);
 		adminAddressFeedbackPanel.add(inProgressStaffIssueButton);
 		
-		JLabel lblNewLabel_1_1_2 = new JLabel("In-progress");
-		lblNewLabel_1_1_2.setBounds(34, 34, 118, 77);
+		JLabel lblNewLabel_1_1_2 = new JLabel("");
+		lblNewLabel_1_1_2.setBounds(45, 10, 82, 93);
 		inProgressStaffIssueButton.add(lblNewLabel_1_1_2);
+		lblNewLabel_1_1_2.setIcon(new ImageIcon(inProgress));
+		
+		JLabel lblNewLabel_4_1 = new JLabel("In-progress");
+		lblNewLabel_4_1.setForeground(Color.WHITE);
+		lblNewLabel_4_1.setFont(new Font("Poppins Medium", Font.PLAIN, 11));
+		lblNewLabel_4_1.setBounds(45, 97, 72, 13);
+		inProgressStaffIssueButton.add(lblNewLabel_4_1);
 		
 		JPanel studentFeedbackHeading = new JPanel();
 		studentFeedbackHeading.setBackground(new Color(35, 45, 65));
@@ -688,6 +768,14 @@ public class AdminForm extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				feedbackPane.setSelectedIndex(5);
 				feedbackPane.setVisible(true);
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				completedStaffIssueButton.setBackground(new Color(0,200,0));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				completedStaffIssueButton.setBackground(new Color(0,159,0));
 			}
 		});
 		completedStaffIssueButton.setLayout(null);
@@ -746,7 +834,7 @@ public class AdminForm extends JFrame {
 					dispose();
 				}
 			}
-		});
+		}); 
 		adminLogoutButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -798,7 +886,7 @@ public class AdminForm extends JFrame {
 			
 				@Override
 				public void mouseExited(MouseEvent e) {
-					adminAddDeleteStaffButton.setBackground(new Color(35,45,65));
+					adminAddDeleteStaffButton.setBackground(new Color(35,45,65)); 
 				}
 			});
 		adminAddDeleteStaffButton.setForeground(new Color(206, 209, 217));
@@ -881,7 +969,7 @@ public class AdminForm extends JFrame {
 		adminAddFeedbackButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				adminPane.setSelectedIndex(4);
-			}
+			} 
 		});
 		adminAddFeedbackButton.addMouseListener(new MouseAdapter() {
 			@Override
