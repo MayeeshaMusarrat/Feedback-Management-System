@@ -44,7 +44,7 @@ public class LoginForm
 	private JPasswordField adminPwdTextField;
 	private JPasswordField confirmPwdTextField;
 	public String userType="null";
-	public String adminID, adminPwd="",confirm="",id,pwd;
+	public String adminID, adminPwd="",confirm="",id,pwd,name;
 
 	/*** Launch the application. ***/
 	
@@ -276,8 +276,8 @@ public class LoginForm
 					                    	notGranted=false;
 					                    	studentPackage.StudentForm.id=spliced[0];
 					                    	studentPackage.StudentForm.name=spliced[2]+" "+spliced[3]; 
-					                    	studentPackage.StudentForm.phone=spliced[5];
 					                    	studentPackage.StudentForm.level=spliced[4];
+					                    	studentPackage.StudentForm.phone=spliced[5];
 					                    	studentPackage.StudentForm.mail=spliced[6];
 					                    	studentPackage.StudentForm.batch=spliced[7];
 					                    	break;
