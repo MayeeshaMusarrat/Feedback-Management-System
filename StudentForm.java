@@ -2,10 +2,17 @@ package studentPackage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
 
 import LoginRegisterPackage.*;
 
@@ -30,6 +37,7 @@ import javax.swing.JSeparator;
 import javax.swing.JProgressBar;
 import javax.swing.JFormattedTextField;
 import javax.swing.JComboBox;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
@@ -45,6 +53,11 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import java.awt.Cursor;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Rectangle;
+import java.awt.Component;
 
 public class StudentForm extends JFrame 
 {
@@ -59,10 +72,12 @@ public class StudentForm extends JFrame
 	private JTable studentViewStatusTable;
 	public int serial = 1;
 
-	/**
-	 * Create the frame.
-	 */
-	public StudentForm() {
+	
+	
+	public StudentForm() 
+	
+	
+	{
 		setRootPaneCheckingEnabled(false);
 		setResizable(false);
 		setTitle("Student Module");
@@ -217,92 +232,133 @@ public class StudentForm extends JFrame
 		JPanel studentProfilePanel = new JPanel();
 		studentProfilePanel.setLayout(null);
 		studentProfilePanel.setBorder(null);
-		studentProfilePanel.setBackground(Color.WHITE);
+		studentProfilePanel.setBackground(new Color(236, 236, 236));
 		studentDashboardPane.addTab("New tab", null, studentProfilePanel, null);
+		
+		JLabel lblNewLabel_2 = new JLabel("MIST CSE Feedback System");
+		lblNewLabel_2.setForeground(new Color(175, 175, 175));
+		lblNewLabel_2.setFont(new Font("Dialog", Font.ITALIC, 14));
+		lblNewLabel_2.setBounds(50, 616, 192, 23);
+		studentProfilePanel.add(lblNewLabel_2);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(50, 151, 640, 434);
+		studentProfilePanel.add(panel);
+		panel.setLayout(null);
+		
+		JLabel userIcon = new JLabel("");
+		userIcon.setBounds(34, 25, 128, 128);
+		panel.add(userIcon);
+		userIcon.setIcon(new ImageIcon(userImg));
+		
+		JLabel lblNewLabel_3 = new JLabel(name);
+		lblNewLabel_3.setFont(new Font("Poppins SemiBold", Font.PLAIN, 20));
+		lblNewLabel_3.setBounds(185, 55, 344, 28);
+		panel.add(lblNewLabel_3);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setForeground(new Color(192, 192, 192));
+		separator_1.setBounds(187, 86, 430, 3);
+		panel.add(separator_1);
+		
+		JLabel lblNewLabel_4 = new JLabel(id);
+		lblNewLabel_4.setFont(new Font("Poppins Light", Font.PLAIN, 18));
+		lblNewLabel_4.setBounds(184, 97, 200, 23);
+		panel.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_5 = new JLabel("EMAIL ADDRESS");
+		lblNewLabel_5.setFont(new Font("Poppins Medium", Font.PLAIN, 14));
+		lblNewLabel_5.setBounds(48, 174, 151, 23);
+		panel.add(lblNewLabel_5);
+		
+		JLabel studentMail = new JLabel(mail);
+		studentMail.setFont(new Font("Poppins", Font.PLAIN, 12));
+		studentMail.setBounds(48, 198, 233, 23);
+		panel.add(studentMail);
+		
+		JLabel lblNewLabel_5_1 = new JLabel("PHONE NUMBER");
+		lblNewLabel_5_1.setFont(new Font("Poppins Medium", Font.PLAIN, 14));
+		lblNewLabel_5_1.setBounds(48, 231, 151, 23);
+		panel.add(lblNewLabel_5_1);
+		
+		JLabel studentNumber = new JLabel(phone);
+		studentNumber.setFont(new Font("Poppins", Font.PLAIN, 12));
+		studentNumber.setBounds(48, 255, 179, 23);
+		panel.add(studentNumber);
+		
+		JLabel lblNewLabel_5_2 = new JLabel("STUDENT BATCH");
+		lblNewLabel_5_2.setFont(new Font("Poppins Medium", Font.PLAIN, 14));
+		lblNewLabel_5_2.setBounds(48, 288, 151, 23);
+		panel.add(lblNewLabel_5_2);
+		
+		JLabel studentBatch = new JLabel(batch);
+		studentBatch.setFont(new Font("Poppins", Font.PLAIN, 12));
+		studentBatch.setBounds(48, 312, 137, 23);
+		panel.add(studentBatch);
+		
+		JLabel lblNewLabel_5_2_1 = new JLabel("STUDENT LEVEL");
+		lblNewLabel_5_2_1.setFont(new Font("Poppins Medium", Font.PLAIN, 14));
+		lblNewLabel_5_2_1.setBounds(48, 345, 151, 23);
+		panel.add(lblNewLabel_5_2_1);
+		
+		JLabel studentLevel = new JLabel(level);
+		studentLevel.setFont(new Font("Poppins", Font.PLAIN, 12));
+		studentLevel.setBounds(48, 369, 137, 23);
+		panel.add(studentLevel);
+		
+		
+		// ================================== PIE CHART ADDS HERE ==========================================
+		
+
+		DefaultPieDataset pieDataset = new DefaultPieDataset();
+		pieDataset.setValue("Pending", 2);
+		pieDataset.setValue("In-progress", 3);
+		pieDataset.setValue("Completed", 1);
+		JFreeChart chart = ChartFactory.createPieChart("", pieDataset,false,false,false);
+		PiePlot plot = (PiePlot)chart.getPlot();
+
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
+        PieSectionLabelGenerator gen = new StandardPieSectionLabelGenerator("{0}:{1}");
+        plot.setSimpleLabels(true);
+        plot.setLabelGenerator(gen);
+        
+		JPanel pieChartPanel = new JPanel();
+		pieChartPanel.setBackground(new Color(255, 255, 255));
+		pieChartPanel.setBounds(251, 130, 366, 273);
+		
+        
+		pieChartPanel.removeAll();
+		pieChartPanel.setLayout(null);
+		pieChartPanel.validate();
+		panel.add(pieChartPanel);
+		
+		ChartPanel barChartPanel = new ChartPanel(chart);
+		barChartPanel.setBounds(-61, -40, 492, 346);
+		pieChartPanel.add(barChartPanel);
+		barChartPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+		barChartPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+		barChartPanel.setBackground(new Color(192, 192, 192));
+		barChartPanel.setLayout(null);
+		
+		
+		
+		
+		
+		/// ================================================================================================
 		
 		JPanel studentWelcomePanel = new JPanel();
 		studentWelcomePanel.setLayout(null);
 		studentWelcomePanel.setBorder(null);
 		studentWelcomePanel.setBackground(new Color(51, 181, 165));
-		studentWelcomePanel.setBounds(0, 103, 768, 141);
+		studentWelcomePanel.setBounds(0, 39, 778, 214);
 		studentProfilePanel.add(studentWelcomePanel);
 		
-		JLabel studentWelcomeLabel = new JLabel("Welcome to Student Module");
-		studentWelcomeLabel.setForeground(new Color(255, 255, 255));
-		studentWelcomeLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentWelcomeLabel.setBounds(24, 37, 273, 23);
+		JLabel studentWelcomeLabel = new JLabel("Welcome to Student Module!");
+		studentWelcomeLabel.setBounds(50, 62, 348, 23);
 		studentWelcomePanel.add(studentWelcomeLabel);
-		
-		JLabel studentNameLabel = new JLabel("Name:");
-		studentNameLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentNameLabel.setBounds(89, 308, 85, 19);
-		studentProfilePanel.add(studentNameLabel);
-		
-		JLabel studentNameShowLabel = new JLabel(name);
-		studentNameShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentNameShowLabel.setBounds(148, 300, 327, 32);
-		studentProfilePanel.add(studentNameShowLabel);
-		
-		JLabel studentIDLabel = new JLabel("Student ID:");
-		studentIDLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentIDLabel.setBounds(89, 354, 85, 19);
-		studentProfilePanel.add(studentIDLabel);
-		
-		JLabel studentLevelShowLabel = new JLabel(level);
-		studentLevelShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentLevelShowLabel.setBounds(143, 383, 183, 46);
-		studentProfilePanel.add(studentLevelShowLabel);
-		
-		JLabel studentLevelLabel = new JLabel("Level: ");
-		studentLevelLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentLevelLabel.setBounds(89, 398, 183, 19);
-		studentProfilePanel.add(studentLevelLabel);
-		
-		JLabel studentBatchLabel = new JLabel("Batch:");
-		studentBatchLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentBatchLabel.setBounds(89, 445, 93, 19);
-		studentProfilePanel.add(studentBatchLabel);
-		
-		JLabel studentPhoneLabel = new JLabel("Phone Number:");
-		studentPhoneLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentPhoneLabel.setBounds(89, 532, 140, 19);
-		studentProfilePanel.add(studentPhoneLabel);
-		
-		JLabel userIcon = new JLabel("");
-		userIcon.setBounds(434, 342, 158, 188);
-		studentProfilePanel.add(userIcon);
-		userIcon.setIcon(new ImageIcon(userImg));
-		
-		JLabel lblNewLabel_2 = new JLabel("MIST CSE Feedback System");
-		lblNewLabel_2.setForeground(new Color(163, 163, 163));
-		lblNewLabel_2.setFont(new Font("Dialog", Font.ITALIC, 14));
-		lblNewLabel_2.setBounds(25, 63, 192, 23);
-		studentProfilePanel.add(lblNewLabel_2);
-		
-		JLabel studentIDShowLabel = new JLabel(id);
-		studentIDShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentIDShowLabel.setBounds(184, 351, 327, 24);
-		studentProfilePanel.add(studentIDShowLabel);
-		
-		JLabel studentMailLabel = new JLabel("Email Address:");
-		studentMailLabel.setFont(new Font("Dialog", Font.BOLD, 16));
-		studentMailLabel.setBounds(89, 491, 140, 19);
-		studentProfilePanel.add(studentMailLabel);
-		
-		JLabel studentBatchShowLabel = new JLabel(batch);
-		studentBatchShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentBatchShowLabel.setBounds(148, 427, 327, 54);
-		studentProfilePanel.add(studentBatchShowLabel);
-		
-		JLabel studentEmailShowLabel = new JLabel(mail);
-		studentEmailShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentEmailShowLabel.setBounds(209, 483, 337, 32);
-		studentProfilePanel.add(studentEmailShowLabel);
-		
-		JLabel studentPhoneShowLabel = new JLabel(phone);
-		studentPhoneShowLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
-		studentPhoneShowLabel.setBounds(219, 527, 327, 24);
-		studentProfilePanel.add(studentPhoneShowLabel);
+		studentWelcomeLabel.setForeground(new Color(255, 255, 255));
+		studentWelcomeLabel.setFont(new Font("Poppins SemiBold", Font.PLAIN, 23));
 		
 		JPanel studentGiveFeedbackPanel = new JPanel();
 		studentGiveFeedbackPanel.setLayout(null);
@@ -321,6 +377,7 @@ public class StudentForm extends JFrame
 		studentGiveFeedbackPanel.add(lblNewLabel_1);
 		
 		JButton studentSubmitIssueButton = new JButton("Submit");
+		studentSubmitIssueButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
 		studentSubmitIssueButton.setForeground(Color.WHITE);
 		studentSubmitIssueButton.setFont(new Font("Dialog", Font.BOLD, 15));
@@ -332,7 +389,6 @@ public class StudentForm extends JFrame
 
 		JComboBox studentIssueSubcategory = new JComboBox();
 		studentIssueSubcategory.setFont(new Font("Dialog", Font.PLAIN, 12));
-		studentIssueSubcategory.setEditable(true);
 		studentIssueSubcategory.setBackground(Color.WHITE);
 		studentIssueSubcategory.setBounds(178, 223, 257, 23);
 		studentIssueSubcategory.setModel(new DefaultComboBoxModel(new String[] {"- Sub-category -"}));
@@ -365,7 +421,6 @@ public class StudentForm extends JFrame
 				}
 		});
 		studentIssueCategory.setFont(new Font("Dialog", Font.PLAIN, 12));
-		studentIssueCategory.setEditable(true);
 		studentIssueCategory.setBackground(Color.WHITE);
 		studentIssueCategory.setBounds(178, 180, 257, 23);
 		studentGiveFeedbackPanel.add(studentIssueCategory);
@@ -415,7 +470,6 @@ public class StudentForm extends JFrame
 		JComboBox studentIssueSeverity = new JComboBox();
 		studentIssueSeverity.setModel(new DefaultComboBoxModel(new String[] {"-select severity - ", "Trivial", "Moderate", "Urgent"}));
 		studentIssueSeverity.setFont(new Font("Dialog", Font.PLAIN, 12));
-		studentIssueSeverity.setEditable(true);
 		studentIssueSeverity.setBackground(Color.WHITE);
 		studentIssueSeverity.setBounds(178, 268, 257, 23);
 		studentGiveFeedbackPanel.add(studentIssueSeverity);
@@ -448,7 +502,8 @@ public class StudentForm extends JFrame
 		JButton browsePictureButton = new JButton("Browse Picture");
 		browsePictureButton.addActionListener(new ActionListener() 
 		{
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			{
 				JFileChooser Chooser = new JFileChooser();
 				Chooser.showOpenDialog(null);
 				File picFile = Chooser.getSelectedFile();
@@ -516,14 +571,14 @@ public class StudentForm extends JFrame
 		studentWelcomePanel_1_1.add(lblViewStatusOf);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(28, 187, 676, 437);
+		scrollPane.setBounds(28, 187, 676, 384);
 		studentViewFeebackPanel.add(scrollPane);
 		
 		studentViewStatusTable = new JTable();
 		scrollPane.setViewportView(studentViewStatusTable);
 		
 		DefaultTableModel model = new DefaultTableModel();
-		Object[] column = {"Category","Sub-category","Location","Severity","Date","Time","Status"};
+		Object[] column = {"Category","Sub-category","Severity","Location","Date","Time","Status"};
 		Object[] row = new Object[10];
 		model.setColumnIdentifiers(column);
 		studentViewStatusTable.setModel(model);
@@ -543,8 +598,7 @@ public class StudentForm extends JFrame
 		{
 			studentViewStatusTable.getColumnModel().getColumn(i).setCellRenderer(render);
 			studentViewStatusTable.getColumnModel().getColumn(i).setResizable(false);
-	    }
-		
+	    }	
 		studentViewStatusTable.getColumnModel().getColumn(0).setPreferredWidth(30);
 		studentViewStatusTable.getColumnModel().getColumn(1).setPreferredWidth(30);
 		studentViewStatusTable.getColumnModel().getColumn(2).setPreferredWidth(20);
@@ -586,9 +640,6 @@ public class StudentForm extends JFrame
 					model.addRow(row);
 					student.lodge_Feedback(id,cat,subcat, sev,loc,matter,filename, description,dt[0],dt[1]);
 					
-					
-					
-					
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -606,7 +657,7 @@ public class StudentForm extends JFrame
 		{
 			BufferedReader in = new BufferedReader(new FileReader("Student_pending_issues.txt"));
 			String Line = null;
-			int cnt = 1,Number = 0;
+			int cnt = 0,Number = 0;
 			Boolean read = false;
 			//System.out.println(id);
 			while( (Line = in.readLine() )!=null)
@@ -617,18 +668,18 @@ public class StudentForm extends JFrame
 					read = true;
 				if(read)
 				{
-					row[0] = serial;	
+					
 					++Number;
 					if(Number == 1|| Number == 6 || Number == 7 || Number == 8)
 						continue;
 					row[cnt++] = Line;
-					if(cnt == 7) //working!
+					if(cnt == 6) //working!
 					{
 						row[cnt] = "Pending";
 						model.addRow(row);
-						cnt = 1;
+						cnt = 0;
 						Number = 0;
-						++serial;
+					
 						read = false;
 					}
 				}
@@ -643,7 +694,7 @@ public class StudentForm extends JFrame
 		{
 			BufferedReader in = new BufferedReader(new FileReader("Student_inProgress_issues.txt"));
 			String Line = null;
-			int cnt = 1,Number = 0;
+			int cnt = 0,Number = 0;
 			Boolean read = false;
 			//System.out.println(id);
 			while( (Line = in.readLine() )!=null)
@@ -654,16 +705,16 @@ public class StudentForm extends JFrame
 					read = true;
 				if(read)
 				{
-					row[0] = serial;	
+					
 					++Number;
 					if(Number == 1|| Number == 6 || Number == 7 || Number == 8)
 						continue;
 					row[cnt++] = Line;
-					if(cnt == 7) //working!
+					if(cnt == 6) //working!
 					{
 						row[cnt] = "In-progress";
 						model.addRow(row);
-						cnt = 1;
+						cnt = 0;
 						Number = 0;
 						++serial;
 						read = false;
@@ -680,7 +731,7 @@ public class StudentForm extends JFrame
 		{
 			BufferedReader in = new BufferedReader(new FileReader("Student_completed_issues.txt"));
 			String Line = null;
-			int cnt = 1,Number = 0;
+			int cnt = 0,Number = 0;
 			Boolean read = false;
 			//System.out.println(id);
 			while( (Line = in.readLine() )!=null)
@@ -689,7 +740,7 @@ public class StudentForm extends JFrame
 					read = true;
 				if(read)
 				{
-					row[0] = serial;	
+						
 					++Number;
 					if(Number == 1|| Number == 6 || Number == 7 || Number == 8)
 						continue;
@@ -698,7 +749,7 @@ public class StudentForm extends JFrame
 					{
 						row[cnt] = "Completed";
 						model.addRow(row);
-						cnt = 1;
+						cnt = 0;
 						Number = 0;
 						++serial;
 						read = false;
